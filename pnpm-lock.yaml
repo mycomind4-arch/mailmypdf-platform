@@ -25,6 +25,15 @@ importers:
 
   packages/design-system: {}
 
+  packages/document-intelligence:
+    dependencies:
+      '@mailmypdf/core':
+        specifier: workspace:*
+        version: link:../core
+      '@mailmypdf/documents':
+        specifier: workspace:*
+        version: link:../documents
+
   packages/documents:
     dependencies:
       '@mailmypdf/core':
@@ -51,6 +60,14 @@ importers:
       '@mailmypdf/core':
         specifier: workspace:*
         version: link:../core
+
+  packages/voice:
+    dependencies:
+      '@mailmypdf/core':
+        specifier: workspace:*
+        version: link:../core
+
+  packages/voice-client: {}
 
 packages:
 

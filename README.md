@@ -4,7 +4,7 @@ Reusable technology and infrastructure for the MailMyPDF product family.
 
 ## Mission
 
-MailMyPDF Platform is the shared technical layer beneath MailMyPDF and its specialized verticals. It provides reusable primitives for document intelligence, evidence, timelines, AI orchestration, workflows, proof, fulfillment integration, UI, and security.
+MailMyPDF Platform is the shared technical layer beneath MailMyPDF and its specialized verticals. It provides reusable primitives for document intelligence, evidence, timelines, AI orchestration, workflows, proof, fulfillment integration, UI, voice, and security.
 
 The platform is **not** a vertical application and is not a dumping ground for domain-specific logic.
 
@@ -31,6 +31,18 @@ The platform is **not** a vertical application and is not a dumping ground for d
 12. Design tokens and reusable UI foundations
 13. Documentation and example adapters
 
+## Advanced capability layer
+
+The platform now defines provider-neutral boundaries for advanced external runtimes:
+
+- **Document intelligence:** Docling-compatible layout/OCR/table extraction through `@mailmypdf/document-intelligence`.
+- **Realtime voice:** LiveKit-compatible server sessions and tool execution through `@mailmypdf/voice`.
+- **Voice client:** Pipecat-compatible browser integration boundary through `@mailmypdf/voice-client`.
+- **AI tools:** provider runtimes operate through platform-scoped tools rather than direct database access.
+- **Approval boundary:** consequential voice/AI actions require explicit user approval.
+
+See `docs/ADVANCED_AI_STACK.md` for deployment topology, licensing, and provider-boundary details.
+
 ## Future layers
 
 - Workflow engine
@@ -39,6 +51,8 @@ The platform is **not** a vertical application and is not a dumping ground for d
 - Policy/approval engine
 - Connector framework
 - Expanded evaluation and regression infrastructure
+- Production-hosted Docling worker
+- Production-hosted LiveKit/Pipecat agent workers
 
 ## Core principle
 
@@ -53,5 +67,6 @@ The platform should make that lifecycle reusable while allowing every vertical t
 - AI outputs must be structured, validated, provenance-aware, and reviewable.
 - Uploaded documents are untrusted input.
 - Consequential side effects require explicit application policy and authorization.
-- Do not add an agent framework before the underlying deterministic services and AI skills are mature enough to justify it.
+- Provider runtimes must not receive direct persistence/database access.
+- Keep Python/ML/realtime runtimes behind explicit service boundaries rather than forcing them into Cloudflare Workers.
 - Every shared capability should have tests and fixtures before being consumed broadly.
