@@ -132,11 +132,11 @@ export function runAdversarialReview(
   }
 
   const profiles = claims.map((claim) => profileClaim(claim, evidence));
-  const challenges = claims.map((claim, index) => challengeClaim(claim, profiles[index]));
+  const challenges = claims.map((claim, index) => challengeClaim(claim, profiles[index]!));
   const weakest = profiles.reduce<ReviewProfile | null>((current, profile) =>
     current === null || profile.score < current.score ? profile : current, null);
 
-  const weakestLink = weakest
+  const weakestLink: ReviewWeakestLink | null = weakest
     ? {
         claimId: weakest.claimId,
         title: "Weakest supported claim",
