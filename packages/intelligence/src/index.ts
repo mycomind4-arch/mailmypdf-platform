@@ -181,6 +181,35 @@ export {
   sortFindingsByConfidence,
 } from "./finding.js";
 
+
+// ── Timeline ──────────────────────────────────────────────────────────────────
+export type { TimelineEvent, EventIntegrity, DatePrecision, Timeline, TimelineGap } from "./timeline.js";
+export {
+  ALL_EVENT_INTEGRITIES,
+  ALL_DATE_PRECISIONS,
+  INTEGRITY_STRENGTH,
+  MAX_EVENT_TYPE_LENGTH,
+  MAX_DESCRIPTION_LENGTH,
+  MAX_CASE_ID_LENGTH,
+  MAX_EVENTS_FOR_TIMELINE,
+  MAX_DATE_LENGTH,
+  createTimelineEvent,
+  verifyTimelineEvent,
+  retractTimelineEvent,
+  validateTimelineEvent,
+  eventIdentityHash,
+  findDuplicateEvents,
+  createTimeline,
+  activeEvents,
+  sortedByDate,
+  eventsByType,
+  eventsOfType,
+  detectGaps,
+  conflictingDates,
+  sortByIntegrity,
+  sortByPrecision,
+} from "./timeline.js";
+
 // ── Re-exports from dependencies ──────────────────────────────────────────────
 export type { PlatformId, Confidence } from "@mailmypdf/core";
 export { createId, confidence } from "@mailmypdf/core";
