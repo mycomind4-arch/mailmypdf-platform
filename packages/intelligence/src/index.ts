@@ -210,6 +210,26 @@ export {
   sortByPrecision,
 } from "./timeline.js";
 
+
+// ── Deadline ──────────────────────────────────────────────────────────────────
+export type { CalendarType, HolidayCalendar, TemporalConstraint, DeadlineRule, DeadlineResult, DeadlineStatus } from "./deadline.js";
+export {
+  MAX_TRIGGER_EVENT_TYPE,
+  MAX_DAYS,
+  MAX_RULE_NAME,
+  MAX_RULE_DESCRIPTION,
+  MAX_AUTHORITY,
+  MAX_VERSION,
+  createTemporalConstraint,
+  validateTemporalConstraint,
+  createDeadlineRule,
+  validateDeadlineRule,
+  computeDeadline,
+  computeAllDeadlines,
+  getDeadlineStatus,
+  deadlineResultToTimelineEvent,
+} from "./deadline.js";
+
 // ── Re-exports from dependencies ──────────────────────────────────────────────
 export type { PlatformId, Confidence } from "@mailmypdf/core";
 export { createId, confidence } from "@mailmypdf/core";

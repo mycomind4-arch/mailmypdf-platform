@@ -1,6 +1,6 @@
 {
   "version": "0.1.0",
-  "lastUpdated": "2026-08-15T05:20:00Z",
+  "lastUpdated": "2026-08-15T06:00:00Z",
   "capabilities": [
     {
       "id": "core",
@@ -171,9 +171,9 @@
     {
       "id": "timeline-engine",
       "name": "Timeline Engine",
-      "package": null,
-      "status": "not-started",
-      "stability": "none",
+      "package": "@mailmypdf/intelligence",
+      "status": "implemented",
+      "stability": "unstable",
       "consumers": [
         "appeal-mail",
         "immigration-mail",
@@ -181,9 +181,16 @@
         "debt-defense"
       ],
       "unlocks": 4,
-      "description": "Event timeline construction, ordering, gap detection, and deadline derivation from timeline.",
-      "duplicateImplementation": true,
-      "duplicationScore": 7.8
+      "description": "Temporal projection of facts with date precision (exact/approximate/range/unknown/inferred), integrity classification, gap detection, and conflicting date preservation.",
+      "implementedComponents": [
+        "timeline-event",
+        "date-precision",
+        "integrity",
+        "gap-detection",
+        "conflict-detection",
+        "deduplication"
+      ],
+      "testCount": 62
     },
     {
       "id": "finding-engine",
