@@ -1,10 +1,22 @@
 {
   "name": "@mailmypdf/intelligence",
   "version": "0.1.0",
-  "private": false,
+  "description": "Unified intelligence relationship architecture for the MailMyPDF ecosystem",
   "type": "module",
   "main": "./dist/index.js",
   "types": "./dist/index.d.ts",
-  "scripts": {"build": "tsc", "typecheck": "tsc --noEmit", "test": "node --test", "lint": "tsc --noEmit"},
-  "dependencies": {"@mailmypdf/core": "workspace:*"}
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "import": "./dist/index.js"
+    }
+  },
+  "scripts": {
+    "build": "tsc -p tsconfig.json",
+    "test": "tsc -p tsconfig.test.json && node --test dist-test/tests/*.test.js"
+  },
+  "dependencies": {
+    "@mailmypdf/core": "workspace:*",
+    "@mailmypdf/documents": "workspace:*"
+  }
 }

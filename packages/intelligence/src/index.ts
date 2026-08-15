@@ -1,47 +1,91 @@
-import type { Confidence, PlatformId } from "@mailmypdf/core";
+/**
+ * @mailmypdf/intelligence
+ *
+ * Unified intelligence relationship architecture for the MailMyPDF ecosystem.
+ *
+ * Public API:
+ *   ProvenanceLevel, ProvenanceRecord, createProvenance, verifyProvenance
+ *   Entity, createEntity, verifyEntity, validateEntity, addAlias, matchesName
+ *   Fact, FactStatus, createFact, verifyFact, supersedeFact, disputeFact, retractFact, validateFact
+ *   Relationship, IntelligenceType, createRelationship, verifyRelationship, retractRelationship
+ *   validateRelationship, isDuplicate, deduplicateRelationships
+ *   traverseBFS, relationshipsFrom, relationshipsTo, relationshipsOfType
+ *
+ * Re-exports from @mailmypdf/core: PlatformId, Confidence, createId, confidence
+ * Re-exports from @mailmypdf/documents: SourceRef, createSourceRef
+ */
 
-export interface SourceRef {
-  documentId: PlatformId;
-  page?: number;
-  locator?: string;
-}
+// ── Provenance (foundation) ───────────────────────────────────────────────────
+export type {
+  ProvenanceLevel,
+  ProvenanceRecord,
+  IntelligenceObject,
+} from "./provenance.js";
+export {
+  ALL_PROVENANCE_LEVELS,
+  PROVENANCE_STRENGTH,
+  isAutoTrusted,
+  canPresentWithoutDisclaimer,
+  strongerProvenance,
+  createProvenance,
+  verifyProvenance,
+} from "./provenance.js";
 
-export interface Fact {
-  id: PlatformId;
-  subject: string;
-  predicate: string;
-  value: string;
-  confidence: Confidence;
-  sources: readonly SourceRef[];
-}
+// ── Entity ────────────────────────────────────────────────────────────────────
+export type { Entity, EntityStatus } from "./entity.js";
+export {
+  MAX_ENTITY_NAME_LENGTH,
+  MAX_ENTITY_TYPE_LENGTH,
+  MAX_ALIASES,
+  createEntity,
+  verifyEntity,
+  mergeEntity,
+  deprecateEntity,
+  validateEntity,
+  addAlias,
+  matchesName,
+  findByType,
+} from "./entity.js";
 
-export type EvidenceRelation = "supports" | "contradicts" | "qualifies" | "missing";
+// ── Fact ──────────────────────────────────────────────────────────────────────
+export type { Fact, FactStatus } from "./fact.js";
+export {
+  MAX_SUBJECT_LENGTH,
+  MAX_PREDICATE_LENGTH,
+  MAX_VALUE_LENGTH,
+  createFact,
+  verifyFact,
+  supersedeFact,
+  disputeFact,
+  retractFact,
+  validateFact,
+  isFactActive,
+  isFactSuperseded,
+  isFactDisputed,
+  isFactRetracted,
+  factsBySubject,
+  factsByPredicate,
+  findConflictingFacts,
+} from "./fact.js";
 
-export interface EvidenceLink {
-  claimId: PlatformId;
-  evidenceId: PlatformId;
-  relation: EvidenceRelation;
-  confidence: Confidence;
-  sources: readonly SourceRef[];
-}
+// ── Relationship ──────────────────────────────────────────────────────────────
+export type { Relationship, RelationshipStatus, IntelligenceType } from "./relationship.js";
+export {
+  MAX_RELATIONSHIP_TYPE_LENGTH,
+  createRelationship,
+  verifyRelationship,
+  retractRelationship,
+  validateRelationship,
+  isDuplicate,
+  deduplicateRelationships,
+  relationshipsFrom,
+  relationshipsTo,
+  relationshipsOfType,
+  traverseBFS,
+} from "./relationship.js";
 
-export interface TimelineEvent {
-  id: PlatformId;
-  occurredAt: string;
-  type: string;
-  description: string;
-  confidence: Confidence;
-  sources: readonly SourceRef[];
-  conflict?: boolean;
-}
-
-export interface Finding {
-  id: PlatformId;
-  type: string;
-  severity: "info" | "low" | "medium" | "high" | "critical";
-  title: string;
-  explanation: string;
-  confidence: Confidence;
-  sources: readonly SourceRef[];
-  recommendedActions?: readonly string[];
-}
+// ── Re-exports from dependencies ──────────────────────────────────────────────
+export type { PlatformId, Confidence } from "@mailmypdf/core";
+export { createId, confidence } from "@mailmypdf/core";
+export type { SourceRef } from "@mailmypdf/documents";
+export { createSourceRef } from "@mailmypdf/documents";

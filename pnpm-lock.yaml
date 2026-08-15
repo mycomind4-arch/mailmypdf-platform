@@ -42,6 +42,9 @@ importers:
       '@mailmypdf/core':
         specifier: workspace:*
         version: link:../core
+      '@mailmypdf/documents':
+        specifier: workspace:*
+        version: link:../documents
 
   packages/proof:
     dependencies:
