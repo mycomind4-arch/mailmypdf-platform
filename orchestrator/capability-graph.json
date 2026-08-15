@@ -1,6 +1,6 @@
 {
-  "version": "0.1.0",
-  "lastUpdated": "2026-08-15T07:00:00Z",
+  "version": "0.2.0",
+  "lastUpdated": "2026-08-15T20:42:00Z",
   "capabilities": [
     {
       "id": "core",
@@ -48,21 +48,21 @@
         "mailmypdf-smallbusiness"
       ],
       "unlocks": 5,
-      "description": "Provenance (6 levels), Entity, Fact (append-only history), Relationship (directed graph with BFS traversal). Evidence, findings, timeline, contradictions, deadlines build on top.",
+      "description": "Provenance (6 levels), Entity, Fact (append-only history), Relationship (directed graph with BFS traversal). Evidence, findings, timeline, contradictions, deadlines, risk build on top.",
       "implementedComponents": [
         "provenance",
         "entity",
         "fact",
-        "relationship"
-      ],
-      "pendingComponents": [
+        "relationship",
         "evidence",
         "findings",
         "timeline",
         "contradictions",
-        "deadlines"
+        "deadlines",
+        "risk"
       ],
-      "testCount": 111
+      "pendingComponents": [],
+      "testCount": 410
     },
     {
       "id": "ai",
@@ -166,7 +166,7 @@
         "debt-defense"
       ],
       "unlocks": 6,
-      "description": "Evidence linking: claims \u2192 supporting/contradicting evidence with confidence, provenance, and deterministic evaluation.",
+      "description": "Evidence linking: claims to supporting/contradicting evidence with confidence, provenance, and deterministic evaluation.",
       "implementedComponents": [
         "evidence-item",
         "evidence-packet",
@@ -241,6 +241,31 @@
       "testCount": 47
     },
     {
+      "id": "risk-assessment",
+      "name": "Risk Assessment Engine",
+      "package": "@mailmypdf/intelligence",
+      "status": "implemented",
+      "stability": "unstable",
+      "consumers": [
+        "appeal-mail",
+        "immigration-mail",
+        "notice-respond",
+        "dispute-mail",
+        "mailmypdf-smallbusiness"
+      ],
+      "unlocks": 5,
+      "description": "Deterministic, explainable risk evaluation derived from findings, contradictions, deadlines, evidence, and timeline state. Distinguishes UNKNOWN (insufficient information) from LOW (assessed, no issues). Every risk factor traces to underlying intelligence with derivation provenance. No vertical-specific branches.",
+      "implementedComponents": [
+        "risk-level",
+        "risk-factor",
+        "risk-assessment",
+        "scoring",
+        "explainability",
+        "insufficient-information"
+      ],
+      "testCount": 50
+    },
+    {
       "id": "workflow-engine",
       "name": "Workflow Engine",
       "package": null,
@@ -280,7 +305,8 @@
       "evidence-graph",
       "timeline-engine",
       "finding-engine",
-      "contradiction-detector"
+      "contradiction-detector",
+      "risk-assessment"
     ],
     "immigration-mail": [
       "core",
@@ -294,7 +320,8 @@
       "evidence-graph",
       "timeline-engine",
       "finding-engine",
-      "contradiction-detector"
+      "contradiction-detector",
+      "risk-assessment"
     ],
     "notice-respond": [
       "core",
@@ -305,7 +332,8 @@
       "fulfillment",
       "design-system",
       "deadline-engine",
-      "timeline-engine"
+      "timeline-engine",
+      "risk-assessment"
     ],
     "dispute-mail": [
       "core",
@@ -317,7 +345,8 @@
       "design-system",
       "evidence-graph",
       "finding-engine",
-      "contradiction-detector"
+      "contradiction-detector",
+      "risk-assessment"
     ],
     "mailmypdf-smallbusiness": [
       "core",
@@ -328,7 +357,8 @@
       "fulfillment",
       "design-system",
       "workflow-engine",
-      "agent-runtime"
+      "agent-runtime",
+      "risk-assessment"
     ],
     "debt-defense": [
       "core",

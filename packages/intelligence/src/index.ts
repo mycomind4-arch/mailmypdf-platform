@@ -256,3 +256,49 @@ export type { PlatformId, Confidence } from "@mailmypdf/core";
 export { createId, confidence } from "@mailmypdf/core";
 export type { SourceRef } from "@mailmypdf/documents";
 export { createSourceRef } from "@mailmypdf/documents";
+
+// ═══════════════════════════════════════════════════════════════════════════════
+// CASE ASSESSMENT
+// ═══════════════════════════════════════════════════════════════════════════════
+
+export type {
+  CaseStatus,
+  ActionPriority,
+  ActionStatus,
+  RecommendedAction,
+  CreateRecommendedActionInput,
+  ReadinessCheck,
+  ReadinessResult,
+  CaseAssessment,
+  CaseAssessmentInput,
+} from "./case-assessment.js";
+
+export {
+  ALL_CASE_STATUSES,
+  ALL_ACTION_PRIORITIES,
+  ACTION_PRIORITY_WEIGHT,
+  MAX_ACTION_DESCRIPTION,
+  MAX_EXPECTED_OUTCOME,
+  MAX_ACTION_TYPE,
+  MAX_CHECK_LABEL,
+  MAX_CHECK_DESCRIPTION,
+  READINESS_THRESHOLD,
+  MAX_ASSESSMENT_SUMMARY,
+  createRecommendedAction,
+  completeAction,
+  dismissAction,
+  isActionPending,
+  isActionCompleted,
+  validateRecommendedAction,
+  createReadinessCheck,
+  computeCaseAssessment,
+  validateCaseAssessment,
+  pendingActions,
+  criticalActions,
+  highPriorityActions,
+  failedChecks,
+  warningChecks,
+  isCaseReady,
+  isActionRequired,
+  explainAssessment as explainCaseAssessment,
+} from "./case-assessment.js";
