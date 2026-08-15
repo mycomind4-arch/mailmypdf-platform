@@ -14,7 +14,8 @@ export interface VoiceSessionContext {
 export interface VoiceToolCall {
   readonly name: string;
   readonly arguments: Record<string, unknown>;
-  readonly requiresApproval: boolean;
+  /** Set only after the user has explicitly approved a consequential action. */
+  readonly approved: boolean;
 }
 
 export interface VoiceTurn {
@@ -50,17 +51,14 @@ export interface VoiceToolDefinition {
   readonly execute: (args: Record<string, unknown>, context: VoiceSessionContext) => Promise<unknown>;
 }
 
-/**
- * Guardrail for voice-driven actions. Any consequential operation must be
- * explicitly approved by the user before an adapter is allowed to execute it.
- */
-export function requiresVoiceApproval(call: VoiceToolCall): boolean {
-  return call.requiresApproval;
+/** Consequential tools must receive an explicit user approval signal. */
+export function requiresVoiceApproval(tool: VoiceToolDefinition): boolean {
+  return tool.requiresApproval;
 }
 
 /**
- * Platform-neutral tool registry. LiveKit and Pipecat adapters plug into this
- * contract; the platform never gives a voice provider direct database access.
+ * Provider-neutral registry. LiveKit and Pipecat adapters plug into this
+ * contract; providers never receive direct database access.
  */
 export class InMemoryVoiceToolRegistry implements VoiceToolRegistry {
   private readonly tools = new Map<string, VoiceToolDefinition>();
@@ -77,8 +75,8 @@ export class InMemoryVoiceToolRegistry implements VoiceToolRegistry {
   async execute(call: VoiceToolCall, context: VoiceSessionContext): Promise<unknown> {
     const tool = this.tools.get(call.name);
     if (!tool) throw new Error(`Unknown voice tool: ${call.name}`);
-    if (tool.requiresApproval && !call.requiresApproval) {
-      throw new Error(`Approval metadata missing for consequential voice tool: ${call.name}`);
+    if (tool.requiresApproval && !call.approved) {
+      throw new Error(`Explicit user approval required for consequential voice tool: ${call.name}`);
     }
     return tool.execute(call.arguments, context);
   }
