@@ -1,6 +1,6 @@
 {
   "version": "0.1.0",
-  "lastUpdated": "2026-08-15T04:10:00Z",
+  "lastUpdated": "2026-08-15T04:30:00Z",
   "capabilities": [
     {
       "id": "core",
@@ -148,9 +148,9 @@
     {
       "id": "evidence-graph",
       "name": "Evidence Graph",
-      "package": null,
-      "status": "not-started",
-      "stability": "none",
+      "package": "@mailmypdf/intelligence",
+      "status": "implemented",
+      "stability": "unstable",
       "consumers": [
         "appeal-mail",
         "immigration-mail",
@@ -160,9 +160,13 @@
         "debt-defense"
       ],
       "unlocks": 6,
-      "description": "Graph-based evidence linking: claims \u2192 supporting/contradicting evidence with confidence and provenance.",
-      "duplicateImplementation": true,
-      "duplicationScore": 8.9
+      "description": "Evidence linking: claims \u2192 supporting/contradicting evidence with confidence, provenance, and deterministic evaluation.",
+      "implementedComponents": [
+        "evidence-item",
+        "evidence-packet",
+        "evaluation"
+      ],
+      "testCount": 68
     },
     {
       "id": "timeline-engine",

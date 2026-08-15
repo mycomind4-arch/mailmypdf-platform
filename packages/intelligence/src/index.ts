@@ -13,6 +13,7 @@
  *
  *   EvidenceItem, EvidencePacket, EvidenceEvaluation, createEvidence, evaluateEvidence
  *   evidenceForClaim, isDuplicateEvidence, deduplicateEvidence
+ *   Contradiction, detectContradictions, resolveContradiction, sortBySeverity
  *
  * Re-exports from @mailmypdf/core: PlatformId, Confidence, createId, confidence
  * Re-exports from @mailmypdf/documents: SourceRef, createSourceRef
@@ -115,6 +116,40 @@ export {
   isDuplicateEvidence,
   deduplicateEvidence,
 } from "./evidence.js";
+
+
+// ── Contradiction ─────────────────────────────────────────────────────────────
+export type { Contradiction, ContradictionSeverity, ReviewStatus, Resolution, DetectionType } from "./contradiction.js";
+export {
+  ALL_SEVERITY_LEVELS,
+  SEVERITY_WEIGHT,
+  MAX_CONTRADICTION_EXPLANATION,
+  MAX_CONFLICT_SUBJECT,
+  MAX_CONFLICT_PREDICATE,
+  MAX_FACTS_FOR_DETECTION,
+  MAX_PAIRS_PER_GROUP,
+  createContradiction,
+  reviewContradiction,
+  resolveContradiction,
+  validateContradiction,
+  isUnreviewed,
+  isReviewed,
+  isResolved,
+  isCritical,
+  isMajor,
+  isMinor,
+  isConfirmed,
+  isPotential,
+  contradictionsForFact,
+  unresolvedContradictions,
+  criticalContradictions,
+  confirmedContradictions,
+  potentialContradictions,
+  classifyPredicate,
+  detectContradictions,
+  sortBySeverity,
+  sortByReviewStatus,
+} from "./contradiction.js";
 
 // ── Re-exports from dependencies ──────────────────────────────────────────────
 export type { PlatformId, Confidence } from "@mailmypdf/core";
