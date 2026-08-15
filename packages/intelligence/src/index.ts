@@ -11,6 +11,9 @@
  *   validateRelationship, isDuplicate, deduplicateRelationships
  *   traverseBFS, relationshipsFrom, relationshipsTo, relationshipsOfType
  *
+ *   EvidenceItem, EvidencePacket, EvidenceEvaluation, createEvidence, evaluateEvidence
+ *   evidenceForClaim, isDuplicateEvidence, deduplicateEvidence
+ *
  * Re-exports from @mailmypdf/core: PlatformId, Confidence, createId, confidence
  * Re-exports from @mailmypdf/documents: SourceRef, createSourceRef
  */
@@ -83,6 +86,35 @@ export {
   relationshipsOfType,
   traverseBFS,
 } from "./relationship.js";
+
+
+// ── Evidence ──────────────────────────────────────────────────────────────────
+export type { EvidenceItem, EvidenceStatus, EvidencePacket, EvidenceEvaluation, EvidenceRelation } from "./evidence.js";
+export {
+  ALL_EVIDENCE_RELATIONS,
+  RELATION_STRENGTH,
+  MAX_EXPLANATION_LENGTH,
+  MAX_EVIDENCE_ID_LENGTH,
+  createEvidence,
+  verifyEvidence,
+  retractEvidence,
+  supersedeEvidence,
+  validateEvidence,
+  createEvidencePacket,
+  activeItems,
+  supportingItems,
+  contradictingItems,
+  qualifyingItems,
+  missingItems,
+  evaluateEvidence,
+  evidenceForClaim,
+  hasContradictions,
+  hasGaps,
+  PROVENANCE_WEIGHT,
+  MAX_EVIDENCE_ITEMS,
+  isDuplicateEvidence,
+  deduplicateEvidence,
+} from "./evidence.js";
 
 // ── Re-exports from dependencies ──────────────────────────────────────────────
 export type { PlatformId, Confidence } from "@mailmypdf/core";

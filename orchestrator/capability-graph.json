@@ -1,6 +1,6 @@
 {
   "version": "0.1.0",
-  "lastUpdated": "2026-08-15T02:11:00Z",
+  "lastUpdated": "2026-08-15T04:10:00Z",
   "capabilities": [
     {
       "id": "core",
@@ -8,7 +8,13 @@
       "package": "@mailmypdf/core",
       "status": "implemented",
       "stability": "stable",
-      "consumers": ["appeal-mail", "immigration-mail", "notice-respond", "dispute-mail", "mailmypdf-smallbusiness"],
+      "consumers": [
+        "appeal-mail",
+        "immigration-mail",
+        "notice-respond",
+        "dispute-mail",
+        "mailmypdf-smallbusiness"
+      ],
       "unlocks": 5,
       "description": "Branded types, Result, typed errors, validation, date utilities, config, logging, retry"
     },
@@ -18,7 +24,13 @@
       "package": "@mailmypdf/documents",
       "status": "implemented",
       "stability": "stable",
-      "consumers": ["appeal-mail", "immigration-mail", "notice-respond", "dispute-mail", "mailmypdf-smallbusiness"],
+      "consumers": [
+        "appeal-mail",
+        "immigration-mail",
+        "notice-respond",
+        "dispute-mail",
+        "mailmypdf-smallbusiness"
+      ],
       "unlocks": 5,
       "description": "Document lifecycle, metadata, security validation, classification contract, extraction interface"
     },
@@ -26,11 +38,31 @@
       "id": "intelligence",
       "name": "Intelligence Primitives",
       "package": "@mailmypdf/intelligence",
-      "status": "in-progress",
+      "status": "implemented",
       "stability": "unstable",
-      "consumers": ["appeal-mail", "immigration-mail", "notice-respond", "dispute-mail", "mailmypdf-smallbusiness"],
+      "consumers": [
+        "appeal-mail",
+        "immigration-mail",
+        "notice-respond",
+        "dispute-mail",
+        "mailmypdf-smallbusiness"
+      ],
       "unlocks": 5,
-      "description": "Fact, evidence, contradiction, timeline, deadline, finding models"
+      "description": "Provenance (6 levels), Entity, Fact (append-only history), Relationship (directed graph with BFS traversal). Evidence, findings, timeline, contradictions, deadlines build on top.",
+      "implementedComponents": [
+        "provenance",
+        "entity",
+        "fact",
+        "relationship"
+      ],
+      "pendingComponents": [
+        "evidence",
+        "findings",
+        "timeline",
+        "contradictions",
+        "deadlines"
+      ],
+      "testCount": 111
     },
     {
       "id": "ai",
@@ -38,7 +70,13 @@
       "package": "@mailmypdf/ai",
       "status": "planned",
       "stability": "unstable",
-      "consumers": ["appeal-mail", "immigration-mail", "notice-respond", "dispute-mail", "mailmypdf-smallbusiness"],
+      "consumers": [
+        "appeal-mail",
+        "immigration-mail",
+        "notice-respond",
+        "dispute-mail",
+        "mailmypdf-smallbusiness"
+      ],
       "unlocks": 5,
       "description": "AI task contract, model routing, structured output validation, evaluation framework"
     },
@@ -48,7 +86,13 @@
       "package": "@mailmypdf/proof",
       "status": "planned",
       "stability": "unstable",
-      "consumers": ["appeal-mail", "immigration-mail", "notice-respond", "dispute-mail", "mailmypdf-smallbusiness"],
+      "consumers": [
+        "appeal-mail",
+        "immigration-mail",
+        "notice-respond",
+        "dispute-mail",
+        "mailmypdf-smallbusiness"
+      ],
       "unlocks": 5,
       "description": "Audit event model, proof artifact model, proof packet, hash verification"
     },
@@ -58,7 +102,13 @@
       "package": "@mailmypdf/fulfillment",
       "status": "planned",
       "stability": "unstable",
-      "consumers": ["appeal-mail", "immigration-mail", "notice-respond", "dispute-mail", "mailmypdf-smallbusiness"],
+      "consumers": [
+        "appeal-mail",
+        "immigration-mail",
+        "notice-respond",
+        "dispute-mail",
+        "mailmypdf-smallbusiness"
+      ],
       "unlocks": 5,
       "description": "MailMyPDF API client interface, status normalization, idempotency"
     },
@@ -68,7 +118,13 @@
       "package": "@mailmypdf/design-system",
       "status": "planned",
       "stability": "unstable",
-      "consumers": ["appeal-mail", "immigration-mail", "notice-respond", "dispute-mail", "mailmypdf-smallbusiness"],
+      "consumers": [
+        "appeal-mail",
+        "immigration-mail",
+        "notice-respond",
+        "dispute-mail",
+        "mailmypdf-smallbusiness"
+      ],
       "unlocks": 5,
       "description": "Color tokens, typography scale, spacing, status colors, semantic tokens"
     },
@@ -78,7 +134,12 @@
       "package": null,
       "status": "not-started",
       "stability": "none",
-      "consumers": ["appeal-mail", "immigration-mail", "notice-respond", "dispute-mail"],
+      "consumers": [
+        "appeal-mail",
+        "immigration-mail",
+        "notice-respond",
+        "dispute-mail"
+      ],
       "unlocks": 4,
       "description": "Reusable deadline computation: event + rule = deadline. Date extraction, rule evaluation, calculation separated.",
       "duplicateImplementation": true,
@@ -90,9 +151,16 @@
       "package": null,
       "status": "not-started",
       "stability": "none",
-      "consumers": ["appeal-mail", "immigration-mail", "dispute-mail", "benefits-appeal", "claims-mail", "debt-defense"],
+      "consumers": [
+        "appeal-mail",
+        "immigration-mail",
+        "dispute-mail",
+        "benefits-appeal",
+        "claims-mail",
+        "debt-defense"
+      ],
       "unlocks": 6,
-      "description": "Graph-based evidence linking: claims → supporting/contradicting evidence with confidence and provenance.",
+      "description": "Graph-based evidence linking: claims \u2192 supporting/contradicting evidence with confidence and provenance.",
       "duplicateImplementation": true,
       "duplicationScore": 8.9
     },
@@ -102,7 +170,12 @@
       "package": null,
       "status": "not-started",
       "stability": "none",
-      "consumers": ["appeal-mail", "immigration-mail", "notice-respond", "debt-defense"],
+      "consumers": [
+        "appeal-mail",
+        "immigration-mail",
+        "notice-respond",
+        "debt-defense"
+      ],
       "unlocks": 4,
       "description": "Event timeline construction, ordering, gap detection, and deadline derivation from timeline.",
       "duplicateImplementation": true,
@@ -114,7 +187,11 @@
       "package": null,
       "status": "not-started",
       "stability": "none",
-      "consumers": ["appeal-mail", "immigration-mail", "dispute-mail"],
+      "consumers": [
+        "appeal-mail",
+        "immigration-mail",
+        "dispute-mail"
+      ],
       "unlocks": 3,
       "description": "Structured findings: type, severity, confidence, evidence links, recommended action.",
       "duplicateImplementation": true,
@@ -126,7 +203,11 @@
       "package": null,
       "status": "not-started",
       "stability": "none",
-      "consumers": ["appeal-mail", "immigration-mail", "dispute-mail"],
+      "consumers": [
+        "appeal-mail",
+        "immigration-mail",
+        "dispute-mail"
+      ],
       "unlocks": 3,
       "description": "Cross-document contradiction detection: statement A vs statement B with severity and review status.",
       "duplicateImplementation": true,
@@ -138,7 +219,9 @@
       "package": null,
       "status": "deferred",
       "stability": "none",
-      "consumers": ["mailmypdf-smallbusiness"],
+      "consumers": [
+        "mailmypdf-smallbusiness"
+      ],
       "unlocks": 1,
       "description": "Executable workflow contract for multi-step document processing pipelines.",
       "deferredReason": "Only Small Business has a workflow engine. Wait for second implementation before extracting."
@@ -149,20 +232,107 @@
       "package": null,
       "status": "deferred",
       "stability": "none",
-      "consumers": ["mailmypdf-smallbusiness"],
+      "consumers": [
+        "mailmypdf-smallbusiness"
+      ],
       "unlocks": 1,
       "description": "Agent task execution, skill registration, intent planning.",
       "deferredReason": "Premature extraction risks building the wrong abstraction."
     }
   ],
   "capabilityMatrix": {
-    "appeal-mail": ["core", "documents", "intelligence", "ai", "proof", "fulfillment", "design-system", "deadline-engine", "evidence-graph", "timeline-engine", "finding-engine", "contradiction-detector"],
-    "immigration-mail": ["core", "documents", "intelligence", "ai", "proof", "fulfillment", "design-system", "deadline-engine", "evidence-graph", "timeline-engine", "finding-engine", "contradiction-detector"],
-    "notice-respond": ["core", "documents", "intelligence", "ai", "proof", "fulfillment", "design-system", "deadline-engine", "timeline-engine"],
-    "dispute-mail": ["core", "documents", "intelligence", "ai", "proof", "fulfillment", "design-system", "evidence-graph", "finding-engine", "contradiction-detector"],
-    "mailmypdf-smallbusiness": ["core", "documents", "intelligence", "ai", "proof", "fulfillment", "design-system", "workflow-engine", "agent-runtime"],
-    "debt-defense": ["core", "documents", "intelligence", "ai", "proof", "fulfillment", "design-system", "evidence-graph"],
-    "benefits-appeal": ["core", "documents", "intelligence", "ai", "proof", "fulfillment", "design-system", "deadline-engine", "evidence-graph"],
-    "claims-mail": ["core", "documents", "intelligence", "ai", "proof", "fulfillment", "design-system", "evidence-graph"]
+    "appeal-mail": [
+      "core",
+      "documents",
+      "intelligence",
+      "ai",
+      "proof",
+      "fulfillment",
+      "design-system",
+      "deadline-engine",
+      "evidence-graph",
+      "timeline-engine",
+      "finding-engine",
+      "contradiction-detector"
+    ],
+    "immigration-mail": [
+      "core",
+      "documents",
+      "intelligence",
+      "ai",
+      "proof",
+      "fulfillment",
+      "design-system",
+      "deadline-engine",
+      "evidence-graph",
+      "timeline-engine",
+      "finding-engine",
+      "contradiction-detector"
+    ],
+    "notice-respond": [
+      "core",
+      "documents",
+      "intelligence",
+      "ai",
+      "proof",
+      "fulfillment",
+      "design-system",
+      "deadline-engine",
+      "timeline-engine"
+    ],
+    "dispute-mail": [
+      "core",
+      "documents",
+      "intelligence",
+      "ai",
+      "proof",
+      "fulfillment",
+      "design-system",
+      "evidence-graph",
+      "finding-engine",
+      "contradiction-detector"
+    ],
+    "mailmypdf-smallbusiness": [
+      "core",
+      "documents",
+      "intelligence",
+      "ai",
+      "proof",
+      "fulfillment",
+      "design-system",
+      "workflow-engine",
+      "agent-runtime"
+    ],
+    "debt-defense": [
+      "core",
+      "documents",
+      "intelligence",
+      "ai",
+      "proof",
+      "fulfillment",
+      "design-system",
+      "evidence-graph"
+    ],
+    "benefits-appeal": [
+      "core",
+      "documents",
+      "intelligence",
+      "ai",
+      "proof",
+      "fulfillment",
+      "design-system",
+      "deadline-engine",
+      "evidence-graph"
+    ],
+    "claims-mail": [
+      "core",
+      "documents",
+      "intelligence",
+      "ai",
+      "proof",
+      "fulfillment",
+      "design-system",
+      "evidence-graph"
+    ]
   }
 }
