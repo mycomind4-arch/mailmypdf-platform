@@ -151,6 +151,36 @@ export {
   sortByReviewStatus,
 } from "./contradiction.js";
 
+
+// ── Finding ───────────────────────────────────────────────────────────────────
+export type { Finding, FindingSeverity, FindingStatus } from "./finding.js";
+export {
+  ALL_FINDING_SEVERITIES,
+  FINDING_SEVERITY_WEIGHT,
+  MAX_FINDING_TYPE_LENGTH,
+  MAX_FINDING_EXPLANATION_LENGTH,
+  MAX_RECOMMENDED_ACTION_LENGTH,
+  MAX_DERIVATION_REFS,
+  createFinding,
+  verifyFinding,
+  supersedeFinding,
+  retractFinding,
+  validateFinding,
+  isFindingActive,
+  isFindingSuperseded,
+  isFindingRetracted,
+  isFindingCritical,
+  isFindingMajor,
+  isFindingMinor,
+  isFindingInfo,
+  findingsForEntity,
+  findingsForFact,
+  criticalFindings,
+  unresolvedFindings,
+  sortFindingsBySeverity,
+  sortFindingsByConfidence,
+} from "./finding.js";
+
 // ── Re-exports from dependencies ──────────────────────────────────────────────
 export type { PlatformId, Confidence } from "@mailmypdf/core";
 export { createId, confidence } from "@mailmypdf/core";
