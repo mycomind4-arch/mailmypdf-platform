@@ -1,6 +1,6 @@
 {
   "version": "0.1.0",
-  "lastUpdated": "2026-08-15T06:00:00Z",
+  "lastUpdated": "2026-08-15T07:00:00Z",
   "capabilities": [
     {
       "id": "core",
@@ -131,9 +131,9 @@
     {
       "id": "deadline-engine",
       "name": "Deadline Engine",
-      "package": null,
-      "status": "not-started",
-      "stability": "none",
+      "package": "@mailmypdf/intelligence",
+      "status": "implemented",
+      "stability": "unstable",
       "consumers": [
         "appeal-mail",
         "immigration-mail",
@@ -141,9 +141,15 @@
         "dispute-mail"
       ],
       "unlocks": 4,
-      "description": "Reusable deadline computation: event + rule = deadline. Date extraction, rule evaluation, calculation separated.",
-      "duplicateImplementation": true,
-      "duplicationScore": 9.7
+      "description": "Temporal constraints and rule-based deadline computation with calendar/business-day support. Platform provides machinery, verticals provide rules.",
+      "implementedComponents": [
+        "temporal-constraint",
+        "deadline-rule",
+        "deadline-calculator",
+        "holiday-calendar-interface",
+        "deadline-status"
+      ],
+      "testCount": 35
     },
     {
       "id": "evidence-graph",

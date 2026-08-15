@@ -230,6 +230,27 @@ export {
   deadlineResultToTimelineEvent,
 } from "./deadline.js";
 
+
+// ── Risk ──────────────────────────────────────────────────────────────────────
+export type { RiskLevel, RiskFactor, RiskAssessment, RiskAssessmentInput } from "./risk.js";
+export {
+  ALL_RISK_LEVELS,
+  RISK_LEVEL_WEIGHT,
+  MAX_FACTOR_DESCRIPTION,
+  MAX_FACTORS_PER_ASSESSMENT,
+  MAX_SUMMARY_LENGTH,
+  computeRiskAssessment,
+  validateRiskAssessment,
+  isCriticalRisk,
+  isHighRisk,
+  isLowRisk,
+  isUnknownRisk,
+  criticalFactors,
+  highFactors,
+  explainFactor,
+  explainAssessment,
+} from "./risk.js";
+
 // ── Re-exports from dependencies ──────────────────────────────────────────────
 export type { PlatformId, Confidence } from "@mailmypdf/core";
 export { createId, confidence } from "@mailmypdf/core";
