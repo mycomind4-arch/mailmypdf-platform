@@ -1,6 +1,6 @@
 {
   "version": "0.1.0",
-  "lastUpdated": "2026-08-15T04:50:00Z",
+  "lastUpdated": "2026-08-15T05:20:00Z",
   "capabilities": [
     {
       "id": "core",
@@ -188,18 +188,23 @@
     {
       "id": "finding-engine",
       "name": "Finding Engine",
-      "package": null,
-      "status": "not-started",
-      "stability": "none",
+      "package": "@mailmypdf/intelligence",
+      "status": "implemented",
+      "stability": "unstable",
       "consumers": [
         "appeal-mail",
         "immigration-mail",
         "dispute-mail"
       ],
       "unlocks": 3,
-      "description": "Structured findings: type, severity, confidence, evidence links, recommended action.",
-      "duplicateImplementation": true,
-      "duplicationScore": 7.2
+      "description": "Derived conclusions with full derivation chain: facts, evidence, contradictions, entities. AI-proposed findings require human verification.",
+      "implementedComponents": [
+        "finding",
+        "verification",
+        "supersession",
+        "retraction"
+      ],
+      "testCount": 37
     },
     {
       "id": "contradiction-detector",
