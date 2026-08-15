@@ -25,8 +25,25 @@ test("voice registry executes a registered tool with session context", async () 
   });
   const caseId = createId("case-1");
   const result = await registry.execute(
-    { name: "case.read", arguments: {}, requiresApproval: false },
+    { name: "case.read", arguments: {}, approved: false },
     { sessionId: createId("session-1"), ownerId: createId("owner-1"), caseId, transport: "livekit" },
   );
   assert.deepEqual(result, { caseId });
+});
+
+test("voice registry blocks consequential tools without approval", async () => {
+  const registry = new InMemoryVoiceToolRegistry();
+  registry.register({
+    name: "mail.send",
+    description: "Send a physical mailing",
+    requiresApproval: true,
+    execute: async () => ({ sent: true }),
+  });
+  await assert.rejects(
+    registry.execute(
+      { name: "mail.send", arguments: {}, approved: false },
+      { sessionId: createId("session-1"), ownerId: createId("owner-1"), transport: "livekit" },
+    ),
+    /approval required/,
+  );
 });
