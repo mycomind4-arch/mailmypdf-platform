@@ -1,0 +1,1 @@
+{"id":"agents.governed-runtime","version":"1.0.0","status":"promoted","source":"mycomind4-arch/ruthlessinvestigator","provides":["permission-gated-agent-execution","bounded-agent-tasks","execution-audit-records","capability matching"],"rule":"agent authority is explicit; no implicit network/computer access"}
