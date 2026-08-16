@@ -28,39 +28,6 @@ importers:
   packages/design-system: {}
   packages/ecosystem: {}
   packages/evidence: {}
-  packages/fulfillment: {}
-
-  packages/document-intelligence:
-    dependencies:
-      '@mailmypdf/core':
-        specifier: workspace:*
-        version: link:../core
-      '@mailmypdf/documents':
-        specifier: workspace:*
-        version: link:../documents
-
-  packages/documents:
-    dependencies:
-      '@mailmypdf/core':
-        specifier: workspace:*
-        version: link:../core
-
-  packages/intelligence:
-    dependencies:
-      '@mailmypdf/core':
-        specifier: workspace:*
-        version: link:../core
-      '@mailmypdf/documents':
-        specifier: workspace:*
-        version: link:../documents
-
-  packages/proof:
-    dependencies:
-      '@mailmypdf/core':
-        specifier: workspace:*
-        version: link:../core
-
-  packages/redaction: {}
   packages/search: {}
   packages/vertical-factory: {}
 
@@ -70,26 +37,22 @@ importers:
         specifier: workspace:*
         version: link:../core
 
-  packages/voice-client: {}
+  packages/voice-client:
+    peerDependencies:
+      '@pipecat-ai/client-js':
+        specifier: '>=1.13.0 <2'
+        version: 1.13.0
 
 packages:
 
-  '@types/node@26.2.0':
-    resolution: {integrity: sha512-5IviulTZeRNp2vAJ514cc/HUlY5nZ9fCbq9DMyC52BrhFZACo3nI0R7qBxhQmo/d27NFe96ur/b7Wwxklda+kg==}
-
-  typescript@5.9.3:
-    resolution: {integrity: sha512-jl1vZzPDinLr9eUt3J/t7V6FgNEw9QjvBPdyszK9KfQDD41fQrC2Y4vKQdiaUpFT4bXlb1RHhLpp8wtm6M5TgSw==}
-    engines: {node: '>=14.17'}
-
-  undici-types@8.3.0:
-    resolution: {integrity: sha512-j375ScV60dom+YkPFIfTLcOiPxkN/buHz5GobjLhixFuANaNs3C9l4GmrWqejgXWJ7BbJcFYpTEUkS1Ge8bpZQ==}
+  '@pipecat-ai/client-js@1.13.0':
+    resolution: {integrity: sha512-AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=}
+    peerDependencies:
+      '@pipecat-ai/voice-ui-kit': ^1.13.0
+    peerDependenciesMeta:
+      '@pipecat-ai/voice-ui-kit':
+        optional: true
 
 snapshots:
 
-  '@types/node@26.2.0':
-    dependencies:
-      undici-types: 8.3.0
-
-  typescript@5.9.3: {}
-
-  undici-types@8.3.0: {}
+  '@pipecat-ai/client-js@1.13.0': {}
