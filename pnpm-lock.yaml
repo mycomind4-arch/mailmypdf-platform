@@ -30,29 +30,9 @@ importers:
   packages/evidence: {}
   packages/search: {}
   packages/vertical-factory: {}
-
   packages/voice:
     dependencies:
       '@mailmypdf/core':
         specifier: workspace:*
         version: link:../core
-
-  packages/voice-client:
-    peerDependencies:
-      '@pipecat-ai/client-js':
-        specifier: '>=1.13.0 <2'
-        version: 1.13.0
-
-packages:
-
-  '@pipecat-ai/client-js@1.13.0':
-    resolution: {integrity: sha512-AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=}
-    peerDependencies:
-      '@pipecat-ai/voice-ui-kit': ^1.13.0
-    peerDependenciesMeta:
-      '@pipecat-ai/voice-ui-kit':
-        optional: true
-
-snapshots:
-
-  '@pipecat-ai/client-js@1.13.0': {}
+  packages/voice-client: {}
