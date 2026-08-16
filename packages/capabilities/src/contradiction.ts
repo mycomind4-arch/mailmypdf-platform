@@ -1,0 +1,3 @@
+import type { SourceReference } from './provenance';
+export type Contradiction={id:string;field:string;left:{value:string;source:SourceReference};right:{value:string;source:SourceReference};severity:'low'|'medium'|'high'};
+export function findContradictions(values:Array<{field:string;value:string;source:SourceReference}>):Contradiction[]{const out:Contradiction[]=[];for(let i=0;i<values.length;i++){for(let j=i+1;j<values.length;j++){const a=values[i],b=values[j];if(a.field===b.field&&a.value.trim()!==b.value.trim())out.push({id:`${a.field}-${i}-${j}`,field:a.field,left:{value:a.value,source:a.source},right:{value:b.value,source:b.source},severity:'medium'});}}return out;}
