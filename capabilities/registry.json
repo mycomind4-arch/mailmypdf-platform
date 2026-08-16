@@ -1,5 +1,5 @@
 {
-  "version": 2,
+  "version": 3,
   "capabilities": [
     {"id":"provenance.source-reference","status":"promoted","source":"mycomind4-arch/FairProcess:packages/case-model/src/index.ts","domain":"generic"},
     {"id":"provenance.verified-fact","status":"promoted","source":"mycomind4-arch/FairProcess:packages/case-model/src/index.ts","domain":"generic"},
@@ -21,10 +21,13 @@
     {"id":"integrity.verifiable-record","status":"candidate","source":"mycomind4-arch/civic-ledger","domain":"generic"},
     {"id":"proof.parcel-evidence","status":"candidate","source":"mycomind4-arch/ParcelProof","domain":"generic"},
     {"id":"policy.rule-engine","status":"candidate","source":"mycomind4-arch/FairProcess:packages/policy-engine","domain":"generic"},
-    {"id":"case.timeline","status":"candidate","source":"mycomind4-arch/FairProcess","domain":"generic"},
-    {"id":"case.deadline-engine","status":"candidate","source":"mycomind4-arch/notice-respond","domain":"generic"},
-    {"id":"case.contradiction-engine","status":"candidate","source":"mycomind4-arch/notice-respond","domain":"generic"},
-    {"id":"case.quality-engine","status":"candidate","source":"mycomind4-arch/notice-respond","domain":"generic"},
-    {"id":"case.explainability","status":"candidate","source":"mycomind4-arch/notice-respond","domain":"generic"}
+    {"id":"case.timeline","status":"promoted","source":"mycomind4-arch/mailmypdf-platform:packages/intelligence/src/timeline.ts","domain":"generic"},
+    {"id":"case.deadline-engine","status":"promoted","source":"mycomind4-arch/mailmypdf-platform:packages/intelligence/src/deadline.ts","domain":"generic"},
+    {"id":"case.contradiction-engine","status":"promoted","source":"mycomind4-arch/mailmypdf-platform:packages/intelligence/src/contradiction.ts","domain":"generic"},
+    {"id":"case.missing-information","status":"promoted","source":"mycomind4-arch/notice-respond:src/domain/missing-info.ts","domain":"generic"},
+    {"id":"case.quality-engine","status":"promoted","source":"mycomind4-arch/notice-respond:src/domain/quality.ts","domain":"generic"},
+    {"id":"case.explainability","status":"promoted","source":"mycomind4-arch/notice-respond:src/domain/explainability.ts","domain":"generic"},
+    {"id":"security.document-input-boundary","status":"promoted","source":"mycomind4-arch/notice-respond:src/domain/security.ts","domain":"generic"},
+    {"id":"response.versioning","status":"candidate","source":"mycomind4-arch/notice-respond:src/domain/versioning.ts","domain":"generic"}
   ]
 }
