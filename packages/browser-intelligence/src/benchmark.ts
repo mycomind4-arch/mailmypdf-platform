@@ -27,11 +27,11 @@ export interface BrowserBenchmarkSummary {
 }
 
 export function summarizeBenchmark(results: BrowserBenchmarkResult[]): BrowserBenchmarkSummary {
-  if (results.length === 0) throw new Error("BROWSER_BENCHMARK: no results");
-  const adapter = results[0].adapter;
+  const first = results[0];
+  if (!first) throw new Error("BROWSER_BENCHMARK: no results");
   const successRate = results.filter((result) => result.success).length / results.length;
   return {
-    adapter,
+    adapter: first.adapter,
     cases: results,
     successRate,
     averageDurationMs: results.reduce((sum, result) => sum + result.durationMs, 0) / results.length,
