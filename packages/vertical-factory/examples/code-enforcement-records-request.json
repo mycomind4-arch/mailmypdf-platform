@@ -1,0 +1,14 @@
+{
+  "id":"code-enforcement-records-request",
+  "name":"Code Enforcement Records Request",
+  "description":"A reusable correspondence vertical for requesting, analyzing, tracking and mailing code-enforcement records.",
+  "audience":"property owners, tenants, advocates and researchers",
+  "primaryWorkflow":"identify agency and records scope, gather supporting evidence, draft request, review, mail, track and preserve proof",
+  "requiredCapabilities":["document","evidence","correspondence","provenance","approval"],
+  "preferredCapabilities":["search","redaction","voice","quality","deadlines","explainability"],
+  "excludedCapabilities":[],
+  "mailingEnabled":true,
+  "voiceEnabled":true,
+  "languages":["en","es"],
+  "riskProfile":"MODERATE"
+}
