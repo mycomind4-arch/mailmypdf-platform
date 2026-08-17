@@ -9,11 +9,11 @@
  */
 
 import type { VerticalCandidate } from './foundry-contract.js'
-import type { BuildFile, BuildConfig } from './vertical-manifest.js'
+import type { BuildFile, BuildConfig, BuildFramework } from './vertical-manifest.js'
 
 export interface CodeGenRequest {
   candidate: VerticalCandidate
-  framework: 'next' | 'astro' | 'vite' | 'static'
+  framework: BuildFramework
   domain: string
 }
 

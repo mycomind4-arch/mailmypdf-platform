@@ -52,14 +52,27 @@
 49. Added the next integration-ready policy layer without embedding credentials.
 50. Established the production integration gate: real providers must pass health, scope, approval, security, cost, integrity, and idempotency checks before execution.
 
+## Milestones 51-60
+
+51. Fixed build issues across all 13 packages (tsconfig references, type errors, missing dependencies) — full monorepo typecheck/build/test green.
+52. Implemented real GitHub repository provider: HTTPS-only endpoint enforcement, credential isolation via scoped environment, validate/create-branch/create-tree/create-PR operations.
+53. Implemented real model provider adapter: OpenAI-compatible interface with model class routing (FAST/QUALITY), credential scoping, and stub mode for CI.
+54. Implemented real Cloudflare deployment provider: preview and production deployment via Cloudflare Pages API, credential isolation, deployment ID tracking.
+55. Implemented real ecosystem registry provider: in-memory implementation for testing plus Cloudflare KV-based registry for production, with isRegistered and list operations.
+56. Added provider environment scoping: rehearsal/preview/production environments with strict credential isolation — no production credentials in rehearsal or CI.
+57. Expanded vertical manifest with full lifecycle schema: gate history (pending→in_progress→passed/failed/skipped), build config, preview/production URLs, registration ID, gate helper functions (startGate, completeGate, getLatestGateStatus, allGatesPassed).
+58. Added vertical code generator: produces complete static/Astro/Next/Vite site files from VerticalCandidate data, with HTML escaping, security headers, and no embedded credentials.
+59. Added GitHub factory adapter: real VerticalFactoryAdapter implementation using GitHubRepositoryProvider — validates repo, creates branch, generates code, commits tree, optionally creates PR. Rejects original MailMyPDF repository as build target.
+60. Added provider bridges connecting real providers to existing gate interfaces: CloudflareDeploymentBridge, CloudflarePagesBridge, EcosystemRegistryBridge — pipeline call sites unchanged, real providers plugged in behind interfaces.
+
 ## Execution lifecycle
 
 `RESEARCH → SELECT → SPECIFY → BUILD → QA → RED_TEAM → VERIFY → DEPLOY → REGISTER`
 
 ## Current boundary
 
-The Foundry has completed its policy/control-plane foundation and is ready to connect credential-scoped real providers. Production deployment and ecosystem registration remain explicitly gated.
+The Foundry has connected real credential-scoped providers (GitHub, OpenAI-compatible models, Cloudflare Pages, ecosystem registry) behind its existing gate interfaces. Provider bridges allow the pipeline to use real APIs without modifying call sites. The original MailMyPDF repository/domain remains excluded from autonomous vertical migration.
 
 ## Protected boundary
 
-The original MailMyPDF repository/domain remains excluded from autonomous vertical migration/deployment. No autonomous billing changes, access grants, physical mailing, destructive repository operations, or unrestricted production deployment are embedded in the Foundry core.
+The original MailMyPDF repository/domain remains excluded from autonomous vertical migration/deployment. No autonomous billing changes, access grants, physical mailing, destructive repository operations, or unrestricted production deployment are embedded in the Foundry core. No credentials or secrets are embedded in generated vertical code.

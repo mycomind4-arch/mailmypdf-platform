@@ -31,8 +31,10 @@ export interface BuildFile {
   description?: string
 }
 
+export type BuildFramework = 'next' | 'astro' | 'vite' | 'static'
+
 export interface BuildConfig {
-  framework: 'next' | 'astro' | 'vite' | 'static'
+  framework: BuildFramework
   entryPoint: string
   files: BuildFile[]
   dependencies: Record<string, string>
@@ -80,15 +82,20 @@ export function validateManifest(manifest: VerticalManifest, originalRepository:
   if (!manifest.repository) throw new Error('Vertical manifest missing required field: repository')
   if (!manifest.branch) throw new Error('Vertical manifest missing required field: branch')
 
-  // Original MailMyPDF must remain outside autonomous vertical migration
+  // The original MailMyPDF repository must never be a vertical build target.
   if (manifest.repository === originalRepository) {
-    throw new Error('Original MailMyPDF repository is outside autonomous vertical scope')
+    throw new Error('Cannot use the original MailMyPDF repository as a vertical target')
   }
-  if (manifest.excludedRepositories?.includes(originalRepository)) {
-    throw new Error('Original MailMyPDF repository is excluded from vertical scope')
+  if (manifest.repository.includes('/mailmypdf')) {
+    throw new Error('Repository path containing "mailmypdf" is outside autonomous vertical scope')
   }
-  if (manifest.domain === 'mailmypdf.com' || manifest.repository.includes('/mailmypdf')) {
-    throw new Error('Original MailMyPDF domain/repository is outside autonomous vertical scope')
+  if (manifest.domain === 'mailmypdf.com') {
+    throw new Error('The mailmypdf.com domain is outside autonomous vertical scope')
+  }
+
+  // The target repository must not be in the exclusion list (contradictory).
+  if (manifest.excludedRepositories?.includes(manifest.repository)) {
+    throw new Error(`Target repository ${manifest.repository} is in the exclusion list`)
   }
 }
 

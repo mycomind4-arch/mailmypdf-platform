@@ -42,7 +42,7 @@ test('manifest rejects original MailMyPDF repository', () => {
     branch: 'main',
     capabilities: [],
   })
-  assert.throws(() => validateManifest(manifest), /outside autonomous vertical scope/)
+  assert.throws(() => validateManifest(manifest), /original MailMyPDF repository as a vertical target/)
 })
 
 test('manifest rejects mailmypdf.com domain', () => {
