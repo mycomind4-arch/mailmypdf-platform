@@ -1,0 +1,6 @@
+import type { EcosystemCatalogEntry } from './vertical-catalog.js';
+export type VerticalLifecycleState = 'registered' | 'building' | 'preview' | 'verified' | 'production' | 'disabled';
+export interface VerticalLifecycleEvent { readonly id:string; readonly verticalId:string; readonly state:VerticalLifecycleState; readonly commitSha?:string; readonly deploymentUrl?:string; readonly createdAt:string; }
+export interface VerticalLifecycleRecord { readonly vertical:EcosystemCatalogEntry; readonly state:VerticalLifecycleState; readonly lastCommitSha?:string; readonly previewUrl?:string; readonly productionUrl?:string; readonly events:readonly VerticalLifecycleEvent[]; }
+export function isLaunchable(record:VerticalLifecycleRecord):boolean{return record.state==='verified'||record.state==='production';}
+export function reduceVerticalLifecycle(events:readonly VerticalLifecycleEvent[],vertical:EcosystemCatalogEntry):VerticalLifecycleRecord{const ordered=[...events].sort((a,b)=>a.createdAt.localeCompare(b.createdAt));const latest=ordered.at(-1);return{vertical,state:latest?.state??'registered',lastCommitSha:latest?.commitSha,previewUrl:[...ordered].reverse().find(e=>e.deploymentUrl?.includes('pages.dev')&&e.state==='preview')?.deploymentUrl,productionUrl:[...ordered].reverse().find(e=>e.state==='production')?.deploymentUrl,events:ordered};}
