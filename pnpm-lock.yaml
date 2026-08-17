@@ -15,14 +15,15 @@ importers:
         specifier: ^5.8.3
         version: 5.9.3
 
+  packages/accessibility: {}
+  packages/agent-runtime: {}
+
   packages/ai:
     dependencies:
       '@mailmypdf/core':
         specifier: workspace:*
         version: link:../core
 
-  packages/agent-runtime: {}
-  packages/accessibility: {}
   packages/capabilities: {}
   packages/core: {}
   packages/design-system: {}
@@ -74,9 +75,34 @@ importers:
   packages/redaction: {}
   packages/search: {}
   packages/vertical-factory: {}
+
   packages/voice:
     dependencies:
       '@mailmypdf/core':
         specifier: workspace:*
         version: link:../core
+
   packages/voice-client: {}
+
+packages:
+
+  '@types/node@26.2.0':
+    resolution: {integrity: sha512-5IviulTZeRNp2vAJ514cc/HUlY5nZ9fCbq9DMyC52BrhFZACo3nI0R7qBxhQmo/d27NFe96ur/b7Wwxklda+kg==}
+
+  typescript@5.9.3:
+    resolution: {integrity: sha512-jl1vZzPDinLr9eUt3J/t7V6FgNEw9QjvBPdysz9KfQDD41fQrC2Y4vKQdiaUpFT4bXlb1RHhLpp8wtm6M5TgSw==}
+    engines: {node: '>=14.17'}
+    hasBin: true
+
+  undici-types@8.3.0:
+    resolution: {integrity: sha512-j375ScV60dom+YkPFIfTLcOiPxkN/buHz5GobjLhixFuANaNs3C9l4GmrWqejgXWJ7BbJcFYpTEUkS1Ge8bpZQ==}
+
+snapshots:
+
+  '@types/node@26.2.0':
+    dependencies:
+      undici-types: 8.3.0
+
+  typescript@5.9.3: {}
+
+  undici-types@8.3.0: {}
