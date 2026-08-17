@@ -1,5 +1,5 @@
-import type { DocumentExtractionRequest, ExtractedDocument } from '@mailmypdf/documents';
-
+export interface DocumentExtractionRequest { documentId: string; filename: string; contentType: string; content: ArrayBuffer | Uint8Array<ArrayBufferLike> }
+export interface ExtractedDocument { documentId: string; [key: string]: unknown }
 export interface DoclingConfig { endpoint: string; bearerToken?: string; timeoutMs: number }
 export class DoclingAdapter {
   constructor(private readonly config: DoclingConfig) {
@@ -11,7 +11,7 @@ export class DoclingAdapter {
     const timeout = setTimeout(() => controller.abort(), this.config.timeoutMs);
     try {
       const form = new FormData();
-      const bytes = new Uint8Array(request.content);
+      const bytes = request.content instanceof ArrayBuffer ? new Uint8Array(request.content) : new Uint8Array(request.content);
       const buffer = new ArrayBuffer(bytes.byteLength);
       new Uint8Array(buffer).set(bytes);
       form.append('file', new Blob([buffer], { type: request.contentType }), request.filename);
