@@ -1,0 +1,3 @@
+import type { EcosystemCatalogEntry } from './vertical-catalog.js';
+export type EcosystemCatalogEvent = { type:'VERTICAL_REGISTERED'; vertical:EcosystemCatalogEntry; createdAt:string } | { type:'VERTICAL_UPDATED'; vertical:EcosystemCatalogEntry; createdAt:string } | { type:'VERTICAL_DISABLED'; verticalId:string; createdAt:string };
+export function applyCatalogEvent(entries:readonly EcosystemCatalogEntry[],event:EcosystemCatalogEvent):EcosystemCatalogEntry[]{if(event.type==='VERTICAL_DISABLED')return entries.map(e=>e.verticalId===event.verticalId?{...e,status:'disabled'}:e);const without=entries.filter(e=>e.verticalId!==event.vertical.verticalId);return [...without,event.vertical].sort((a,b)=>(a.sortOrder??999)-(b.sortOrder??999)||a.name.localeCompare(b.name));}

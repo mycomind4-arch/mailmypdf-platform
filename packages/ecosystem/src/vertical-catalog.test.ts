@@ -1,0 +1,10 @@
+import test from 'node:test';
+import assert from 'node:assert/strict';
+import { validateCatalog, findVertical } from './vertical-catalog.js';
+import { applyCatalogEvent } from './catalog-events.js';
+import { reduceVerticalLifecycle, isLaunchable } from './vertical-lifecycle.js';
+import { buildRegistration } from './vertical-factory-contract.js';
+const entry=buildRegistration({repository:'mycomind4-arch/immigration-mail',slug:'immigration-mail',name:'Immigration Mail',description:'Immigration correspondence',launchUrl:'https://immigration-mail.pages.dev',capabilities:['documents','evidence'],mailingEnabled:true,theme:'violet'}).vertical;
+test('catalog validates and finds registered vertical',()=>{const catalog={version:1 as const,entries:[entry]};assert.deepEqual(validateCatalog(catalog),[]);assert.equal(findVertical(catalog,'immigration-mail')?.name,'Immigration Mail')});
+test('catalog events register and disable without hardcoded dashboard routes',()=>{const catalog={version:1 as const,entries:[]};const next=applyCatalogEvent(catalog.entries,{type:'VERTICAL_REGISTERED',vertical:entry,createdAt:'2026-08-17T00:00:00Z'});assert.equal(next[0]?.slug,'immigration-mail');const disabled=applyCatalogEvent(next,{type:'VERTICAL_DISABLED',verticalId:'immigration-mail',createdAt:'2026-08-17T01:00:00Z'});assert.equal(disabled[0]?.status,'disabled')});
+test('lifecycle exposes preview and production URLs',()=>{const record=reduceVerticalLifecycle([{id:'1',verticalId:'immigration-mail',state:'preview',deploymentUrl:'https://preview.pages.dev',createdAt:'2026-08-17T00:00:00Z'},{id:'2',verticalId:'immigration-mail',state:'verified',createdAt:'2026-08-17T01:00:00Z'},{id:'3',verticalId:'immigration-mail',state:'production',deploymentUrl:'https://immigration-mail.pages.dev',createdAt:'2026-08-17T02:00:00Z'}],entry);assert.equal(record.productionUrl,'https://immigration-mail.pages.dev');assert.equal(record.previewUrl,'https://preview.pages.dev');assert.equal(isLaunchable(record),true)});
