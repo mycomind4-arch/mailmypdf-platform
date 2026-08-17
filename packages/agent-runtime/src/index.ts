@@ -20,25 +20,10 @@ export interface AgentResult<O = unknown> {
   cost?: { inputTokens: number; outputTokens: number; usd?: number }
 }
 
-export interface AgentExecutor {
-  execute<I, O>(task: AgentTask<I>): Promise<AgentResult<O>>
-}
-
-export interface AgentRun {
-  id: string
-  tasks: AgentTask[]
-  status: 'queued' | 'running' | 'succeeded' | 'failed' | 'blocked'
-}
-
-export function createAgentRun(id: string, tasks: AgentTask[]): AgentRun {
-  if (!id || tasks.length === 0) throw new Error('Agent run requires an id and at least one task')
-  return { id, tasks, status: 'queued' }
-}
-
-export function allSucceeded(results: readonly AgentResult[]): boolean {
-  return results.length > 0 && results.every((result) => result.status === 'succeeded')
-}
-
+export interface AgentExecutor { execute<I, O>(task: AgentTask<I>): Promise<AgentResult<O>> }
+export interface AgentRun { id: string; tasks: AgentTask[]; status: 'queued' | 'running' | 'succeeded' | 'failed' | 'blocked' }
+export function createAgentRun(id: string, tasks: AgentTask[]): AgentRun { if (!id || tasks.length === 0) throw new Error('Agent run requires an id and at least one task'); return { id, tasks, status: 'queued' } }
+export function allSucceeded(results: readonly AgentResult[]): boolean { return results.length > 0 && results.every((result) => result.status === 'succeeded') }
 export * from './execution-plan.js'
 export * from './durable.js'
 export * from './durable-store.js'
@@ -48,3 +33,5 @@ export * from './intelligence-tools.js'
 export * from './tools.js'
 export * from './tool-executor.js'
 export * from './trigger-adapter.js'
+export * from './mcp.js'
+export * from './memory.js'
