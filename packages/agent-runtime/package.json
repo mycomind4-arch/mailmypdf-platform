@@ -1,6 +1,6 @@
 {
   "name": "@mailmypdf/agent-runtime",
-  "version": "0.2.0",
+  "version": "0.3.0",
   "private": false,
   "type": "module",
   "main": "dist/index.js",
@@ -11,7 +11,8 @@
     "test": "node --test"
   },
   "dependencies": {
-    "@mailmypdf/core": "workspace:*"
+    "@mailmypdf/core": "workspace:*",
+    "@mailmypdf/intelligence": "workspace:*"
   },
   "exports": {
     ".": {
