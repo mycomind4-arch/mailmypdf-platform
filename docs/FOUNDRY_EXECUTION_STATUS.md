@@ -1,26 +1,39 @@
 # Vertical Foundry Execution Status
 
-## Ten additional milestones completed
+## Milestones 11-20
 
-11. Added executable agent-runtime task processing with fail-fast semantics.
-12. Added research-to-build pipeline orchestration.
-13. Added release QA gate with blocker and minimum-score enforcement.
-14. Added Cloudflare preview deployment gate boundary.
-15. Added bounded autonomous repair loop with iteration budget.
-16. Added verified ecosystem registration gate.
-17. Added persistent runtime-result recording for Foundry runs.
-18. Added lifecycle observability event sink.
-19. Added portfolio throughput and unique-domain policy gates.
-20. Added the next integration-ready execution layer while preserving provider and credential boundaries.
+11. Executable agent-runtime task processing.
+12. Research-to-build pipeline orchestration.
+13. Release QA gate.
+14. Cloudflare preview deployment boundary.
+15. Bounded autonomous repair loop.
+16. Verified ecosystem registration gate.
+17. Runtime-result recording.
+18. Lifecycle observability events.
+19. Portfolio throughput and unique-domain gates.
+20. Integration-ready execution layer.
 
-## Current lifecycle
+## Milestones 21-30
 
-`RESEARCH → SELECT → SPECIFY → BUILD → QA → RED TEAM → VERIFY → DEPLOY → REGISTER`
+21. Added an end-to-end production pipeline connecting specification, build, QA, preview deployment, verification, and registration boundaries.
+22. Added deterministic provider adapters for safe local/CI rehearsal without production credentials.
+23. Formalized human approval policy for consequential stages.
+24. Added vertical manifests with repository/domain boundary validation.
+25. Added deterministic agent-runtime rehearsal support.
+26. Added normalized quality reports for release decisions.
+27. Established explicit original-MailMyPDF isolation in generated vertical manifests.
+28. Established a single pipeline result object for auditability across build/deploy/register stages.
+29. Established provider substitution points so real GitHub/Cloudflare/model adapters can be added without rewriting Foundry logic.
+30. Established the next integration checkpoint: replace dry-run adapters one provider at a time and verify each with end-to-end tests before granting additional authority.
 
-## Remaining provider-specific work
+## Execution lifecycle
 
-The next phase connects these boundaries to real approved providers: model execution, GitHub repository automation, real QA agents, Cloudflare Pages deployment, and ecosystem registration. Those integrations must remain credential-scoped and policy-controlled.
+`RESEARCH → SELECT → SPECIFY → BUILD → QA → RED_TEAM → VERIFY → DEPLOY → REGISTER`
 
-## Safety boundary
+## Current boundary
 
-No provider credentials, direct database access, autonomous billing changes, access grants, deletion, physical mailing, or unrestricted production deployment are embedded in the Foundry package. The original MailMyPDF repository remains outside autonomous vertical migration/deployment.
+The Foundry now has a coherent executable pipeline, but the default provider adapters remain intentionally non-production. Real provider adapters must be credential-scoped and policy-controlled. Production deployment and ecosystem registration remain gated by explicit verification/approval policy.
+
+## Protected boundary
+
+The original MailMyPDF repository/domain remains excluded from autonomous vertical migration/deployment. No autonomous billing changes, access grants, physical mailing, destructive repository operations, or unrestricted production deployment are embedded in the Foundry core.
