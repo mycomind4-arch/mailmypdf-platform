@@ -161,12 +161,20 @@ export class CloudflareDeploymentProvider implements DeploymentProvider {
       return { reachable: false, statusCode: 0 }
     }
   }
-}
 
-/**
- * Stub Deployment Provider — returns fake URLs without Cloudflare credentials.
- * Useful for CI and local development.
- */
+  /** Check if the Cloudflare API is accessible. */
+  async healthCheck(): Promise<{ healthy: boolean }> {
+    try {
+      const response = await fetch('https://api.cloudflare.com/client/v4/user/tokens/verify', {
+        headers: { 'Authorization': 'Bearer ' + this.apiToken },
+      })
+      const data = await response.json() as { success: boolean }
+      return { healthy: response.ok && data.success }
+    } catch {
+      return { healthy: false }
+    }
+  }
+}
 export class StubDeploymentProvider implements DeploymentProvider {
   async preview(repository: string, branch: string): Promise<{ url: string; status: 'PREVIEW'; deploymentId: string }> {
     return {
@@ -196,5 +204,10 @@ export class StubDeploymentProvider implements DeploymentProvider {
 
   async verifyDeployment(url: string): Promise<{ reachable: boolean; statusCode: number; responseTimeMs?: number }> {
     return { reachable: true, statusCode: 200, responseTimeMs: 0 }
+  }
+
+  /** Check if the stub provider is healthy (always true). */
+  async healthCheck(): Promise<{ healthy: boolean }> {
+    return { healthy: true }
   }
 }

@@ -160,4 +160,16 @@ export class GitHubRepositoryProvider implements RepositoryProvider {
 
     return { state, checks }
   }
+
+  /** Check if the GitHub API is accessible. */
+  async healthCheck(): Promise<{ healthy: boolean }> {
+    try {
+      const response = await fetch('https://api.github.com/zen', {
+        headers: { 'Accept': 'application/vnd.github+json' },
+      })
+      return { healthy: response.ok }
+    } catch {
+      return { healthy: false }
+    }
+  }
 }

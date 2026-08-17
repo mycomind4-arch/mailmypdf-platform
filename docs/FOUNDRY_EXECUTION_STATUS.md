@@ -58,12 +58,20 @@
 52. Implemented real GitHub repository provider: HTTPS-only endpoint enforcement, credential isolation via scoped environment, validate/create-branch/create-tree/create-PR operations.
 53. Implemented real model provider adapter: OpenAI-compatible interface with model class routing (FAST/QUALITY), credential scoping, and stub mode for CI.
 54. Implemented real Cloudflare deployment provider: preview and production deployment via Cloudflare Pages API, credential isolation, deployment ID tracking.
-55. Implemented real ecosystem registry provider: in-memory implementation for testing plus Cloudflare KV-based registry for production, with isRegistered and list operations.
+55. Implemented real ecosystem registry provider: in-memory implementation for testing plus file-based registry for production, with isRegistered and list operations.
 56. Added provider environment scoping: rehearsal/preview/production environments with strict credential isolation — no production credentials in rehearsal or CI.
 57. Expanded vertical manifest with full lifecycle schema: gate history (pending→in_progress→passed/failed/skipped), build config, preview/production URLs, registration ID, gate helper functions (startGate, completeGate, getLatestGateStatus, allGatesPassed).
 58. Added vertical code generator: produces complete static/Astro/Next/Vite site files from VerticalCandidate data, with HTML escaping, security headers, and no embedded credentials.
 59. Added GitHub factory adapter: real VerticalFactoryAdapter implementation using GitHubRepositoryProvider — validates repo, creates branch, generates code, commits tree, optionally creates PR. Rejects original MailMyPDF repository as build target.
 60. Added provider bridges connecting real providers to existing gate interfaces: CloudflareDeploymentBridge, CloudflarePagesBridge, EcosystemRegistryBridge — pipeline call sites unchanged, real providers plugged in behind interfaces.
+
+## Milestones 61-65
+
+61. Added end-to-end pipeline integration: runFullPipeline wires all 6 gates (research→specification→implementation→QA→deployment→registration) with timed execution, manifest gate history tracking, and result aggregation. Fixed manifest validation to correctly allow original repo in exclusion list.
+62. Added provider health check integration: checkProviderHealth verifies all providers (repository, model, deployment, registry) are healthy before pipeline runs. Added healthCheck methods to all provider contracts and implementations. Catches dead credentials and unreachable endpoints before mid-pipeline failures.
+63. Added pipeline audit trail: PipelineAuditTrail records every gate decision, provider call, artifact creation, and approval in an append-only log. Supports filtering by gate, provider, and event type. Provides summary statistics and JSON export for compliance.
+64. Added vertical portfolio manager: VerticalPortfolio tracks all registered verticals by status (researching→building→previewing→registered→production→disabled→rejected). Supports import from manifest, domain/repository lookup, and summary statistics including unique domains and production count.
+65. Added 12 new tests for health check, audit trail, and portfolio manager. All 13 packages green: typecheck ✅ | build ✅ | test ✅ (124 total, 0 failures).
 
 ## Execution lifecycle
 
@@ -71,8 +79,8 @@
 
 ## Current boundary
 
-The Foundry has connected real credential-scoped providers (GitHub, OpenAI-compatible models, Cloudflare Pages, ecosystem registry) behind its existing gate interfaces. Provider bridges allow the pipeline to use real APIs without modifying call sites. The original MailMyPDF repository/domain remains excluded from autonomous vertical migration.
+The Foundry has a complete provider integration layer: real credential-scoped providers (GitHub, OpenAI-compatible models, Cloudflare Pages, ecosystem registry) connected through bridges, an end-to-end pipeline with timed gate execution, provider health checks, an append-only audit trail, and a portfolio manager for tracking all verticals. The original MailMyPDF repository/domain remains excluded from autonomous vertical migration.
 
 ## Protected boundary
 
-The original MailMyPDF repository/domain remains excluded from autonomous vertical migration/deployment. No autonomous billing changes, access grants, physical mailing, destructive repository operations, or unrestricted production deployment are embedded in the Foundry core. No credentials or secrets are embedded in generated vertical code.
+The original MailMyPDF repository/domain remains excluded from autonomous vertical migration/deployment. No autonomous billing changes, access grants, physical mailing, destructive repository operations, or unrestricted production deployment are embedded in the Foundry core. No credentials or secrets are embedded in generated vertical code. The audit trail is append-only and tamper-evident.

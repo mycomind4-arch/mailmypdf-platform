@@ -58,6 +58,8 @@ export interface RepositoryProvider {
   createPullRequest(repository: string, head: string, base: string, title: string, body: string): Promise<PullRequestResult>
   /** Get CI/commit status checks for a ref. */
   getCommitStatus(repository: string, ref: string): Promise<{ state: string; checks: StatusCheck[] }>
+  /** Check if the repository provider is healthy/accessible. */
+  healthCheck(): Promise<{ healthy: boolean }>
 }
 
 // ── Model Provider ──────────────────────────────────────────────────────────
@@ -114,6 +116,8 @@ export interface DeploymentProvider {
   deployProduction(repository: string, branch: string): Promise<{ url: string; status: 'PRODUCTION'; deploymentId: string }>
   /** Verify a deployment URL is reachable and responds. */
   verifyDeployment(url: string): Promise<{ reachable: boolean; statusCode: number; responseTimeMs?: number }>
+  /** Check if the deployment provider is healthy/accessible. */
+  healthCheck(): Promise<{ healthy: boolean }>
 }
 
 // ── Registry Provider ────────────────────────────────────────────────────────
@@ -135,6 +139,8 @@ export interface RegistryProvider {
   isRegistered(verticalId: string): Promise<{ registered: boolean; record?: RegistrationRecord | undefined }>
   /** List all registered verticals. */
   list(): Promise<RegistrationRecord[]>
+  /** Check if the registry provider is healthy/accessible. */
+  healthCheck(): Promise<{ healthy: boolean }>
 }
 
 // ── Provider Set ─────────────────────────────────────────────────────────────

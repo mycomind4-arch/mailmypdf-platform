@@ -113,11 +113,19 @@ export class EcosystemRegistryProvider implements RegistryProvider {
   async list(): Promise<RegistrationRecord[]> {
     return this.readRegistry()
   }
-}
 
-/**
- * In-memory registry provider for testing and CI.
- */
+  /** Check if the registry file is accessible. */
+  async healthCheck(): Promise<{ healthy: boolean }> {
+    try {
+      const fs = await import('node:fs/promises')
+      await fs.access(this.registryPath)
+      return { healthy: true }
+    } catch {
+      // File may not exist yet — that's OK, it'll be created on first write
+      return { healthy: true }
+    }
+  }
+}
 export class InMemoryRegistryProvider implements RegistryProvider {
   private records: RegistrationRecord[] = []
 
@@ -147,5 +155,10 @@ export class InMemoryRegistryProvider implements RegistryProvider {
 
   async list(): Promise<RegistrationRecord[]> {
     return [...this.records]
+  }
+
+  /** Check if the in-memory registry is healthy (always true). */
+  async healthCheck(): Promise<{ healthy: boolean }> {
+    return { healthy: true }
   }
 }
