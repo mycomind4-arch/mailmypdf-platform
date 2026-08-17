@@ -37,7 +37,7 @@ export interface KeywordResearchProvider {
  * the agent must retain source/evidence for every recommendation.
  */
 export function scoreKeywordOpportunity(keyword: KeywordEvidence): number {
-  const volume = Math.min(keyword.volume ?? 0, 100_000) / 100_000
+  const volume = Math.min(keyword.volume ?? 0, 10_000) / 10_000
   const difficulty = 1 - Math.min(Math.max(keyword.difficulty ?? 100, 0), 100) / 100
   const cpc = Math.min(keyword.cpc ?? 0, 100) / 100
   const intent = keyword.intent === 'transactional' ? 1 : keyword.intent === 'commercial' ? 0.8 : keyword.intent === 'informational' ? 0.45 : 0.2

@@ -1,4 +1,4 @@
-import type { RuntimeResult, RuntimeTask } from '../../agent-runtime/src/execution-plan.js'
+import type { RuntimeResult, RuntimeTask } from '@mailmypdf/agent-runtime'
 
 export interface FoundryRunRecord { id: string; verticalId: string; stage: string; tasks: RuntimeTask[]; results: RuntimeResult[] }
 

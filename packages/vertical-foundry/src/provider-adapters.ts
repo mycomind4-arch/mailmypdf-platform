@@ -1,4 +1,4 @@
-import type { AgentRuntimeAdapter, RuntimeResult, RuntimeTask } from '../../agent-runtime/src/execution-plan.js'
+import type { AgentRuntimeAdapter, RuntimeResult, RuntimeTask } from '@mailmypdf/agent-runtime'
 import type { DeploymentAdapter, DeploymentRequest } from './deployment-gate.js'
 import type { EcosystemRegistryAdapter, RegistrationRequest } from './registration-gate.js'
 import type { VerticalBuildRequest, VerticalBuildResult, VerticalFactoryAdapter } from './factory-adapter.js'

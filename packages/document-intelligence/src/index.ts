@@ -61,7 +61,7 @@ export class DoclingHttpProvider implements DocumentIntelligenceProvider {
 
     try {
       const form = new FormData();
-      form.append("file", new Blob([request.content], { type: request.contentType }), request.filename);
+      form.append("file", new Blob([request.content as BlobPart], { type: request.contentType }), request.filename);
       form.append("document_id", request.documentId);
 
       const headers: Record<string, string> = {};

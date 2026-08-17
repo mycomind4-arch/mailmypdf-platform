@@ -5,6 +5,13 @@
   "type": "module",
   "main": "./dist/index.js",
   "types": "./dist/index.d.ts",
-  "scripts": {"build": "tsc", "typecheck": "tsc --noEmit", "test": "node --test", "lint": "tsc --noEmit"},
-  "dependencies": {"@mailmypdf/core": "workspace:*"}
+  "scripts": {
+    "build": "tsc",
+    "typecheck": "tsc --noEmit",
+    "test": "node --test",
+    "lint": "tsc --noEmit"
+  },
+  "dependencies": {
+    "@mailmypdf/core": "workspace:*"
+  }
 }

@@ -1,6 +1,6 @@
+import type { ModelClass } from './model-routing.js'
 import type { AgentRole, VerticalCandidate } from './foundry-contract.js'
 
-export type ModelClass = 'FAST' | 'REASONING' | 'VISION' | 'CODE' | 'MULTILINGUAL' | 'EMBEDDING'
 export interface AgentTask { id:string; role:AgentRole; candidate:VerticalCandidate; objective:string; modelClass:ModelClass }
 export interface AgentExecution { taskId:string; status:'PASS'|'FAIL'|'BLOCKED'; score:number; evidence:string[]; blockers:string[] }
 export interface AgentRuntimeAdapter { execute(task:AgentTask):Promise<AgentExecution> }

@@ -1,4 +1,4 @@
-import { executePlan, type AgentRuntimeAdapter, type RuntimeTask } from '../../agent-runtime/src/execution-plan.js'
+import { executePlan, type AgentRuntimeAdapter, type RuntimeTask } from '@mailmypdf/agent-runtime'
 import { DryRunAgentRuntime } from './provider-adapters.js'
 
 export interface RehearsalResult { succeeded: boolean; results: Awaited<ReturnType<typeof executePlan>> }

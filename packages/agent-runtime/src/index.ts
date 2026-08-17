@@ -38,3 +38,6 @@ export function createAgentRun(id: string, tasks: AgentTask[]): AgentRun {
 export function allSucceeded(results: readonly AgentResult[]): boolean {
   return results.length > 0 && results.every((result) => result.status === 'succeeded')
 }
+
+// Re-export the execution-plan API for consumers that need the simpler task model
+export * from './execution-plan.js'
