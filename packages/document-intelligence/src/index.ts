@@ -98,3 +98,5 @@ export class DoclingHttpProvider implements DocumentIntelligenceProvider {
     }
   }
 }
+
+export * from "./docling-serve.js";
