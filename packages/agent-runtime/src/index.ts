@@ -42,3 +42,4 @@ export function allSucceeded(results: readonly AgentResult[]): boolean {
 export * from './execution-plan.js'
 export * from './durable.js'
 export * from './tools.js'
+export * from './trigger-adapter.js'
