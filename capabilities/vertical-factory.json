@@ -1,0 +1,1 @@
+{"id":"vertical.factory","version":"1.0.0","status":"promoted","source":"platform+ecosystem","provides":["vertical manifests","capability matching","build-plan generation","missing-capability detection","build prompt generation"],"safety":"planning only; does not auto-deploy or grant privileged capabilities"}

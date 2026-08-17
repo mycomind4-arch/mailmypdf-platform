@@ -15,14 +15,17 @@ importers:
         specifier: ^5.8.3
         version: 5.9.3
 
+  packages/accessibility: {}
+  packages/agent-runtime: {}
+
   packages/ai:
     dependencies:
       '@mailmypdf/core':
         specifier: workspace:*
         version: link:../core
 
+  packages/capabilities: {}
   packages/core: {}
-
   packages/design-system: {}
 
   packages/document-intelligence:
@@ -39,6 +42,14 @@ importers:
       '@mailmypdf/core':
         specifier: workspace:*
         version: link:../core
+
+  packages/ecosystem:
+    dependencies:
+      '@mailmypdf/core':
+        specifier: workspace:*
+        version: link:../core
+
+  packages/evidence: {}
 
   packages/fulfillment:
     dependencies:
@@ -60,6 +71,10 @@ importers:
       '@mailmypdf/core':
         specifier: workspace:*
         version: link:../core
+
+  packages/redaction: {}
+  packages/search: {}
+  packages/vertical-factory: {}
 
   packages/voice:
     dependencies:

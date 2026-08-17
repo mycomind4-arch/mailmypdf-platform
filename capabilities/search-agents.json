@@ -1,0 +1,1 @@
+{"id":"search.agents","version":"1.0.0","status":"promoted","source":"mycomind4-arch/advanced-search","provides":["agent-task-contract","agent-finding-contract","capability-registry","bounded-legacy-connectors"],"provider-specific-agents":"candidate-only"}

@@ -1,0 +1,9 @@
+{
+  "id":"search.orchestration",
+  "version":"1.0.0",
+  "status":"promoted",
+  "source":"mycomind4-arch/advanced-search",
+  "provides":["adapter-registry","bounded-search-execution","timeouts","deduplication","signal-ranking","search-planning","evidence-clustering"],
+  "providerAdapters":"candidate-only",
+  "reuseRule":"verticals consume the platform contract; provider-specific adapters require separate review"
+}

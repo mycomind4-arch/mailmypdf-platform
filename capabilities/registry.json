@@ -1,0 +1,33 @@
+{
+  "version": 3,
+  "capabilities": [
+    {"id":"provenance.source-reference","status":"promoted","source":"mycomind4-arch/FairProcess:packages/case-model/src/index.ts","domain":"generic"},
+    {"id":"provenance.verified-fact","status":"promoted","source":"mycomind4-arch/FairProcess:packages/case-model/src/index.ts","domain":"generic"},
+    {"id":"case.correspondence-record","status":"promoted","source":"mycomind4-arch/FairProcess:packages/case-model/src/index.ts","domain":"generic"},
+    {"id":"ai.cloudflare-workers","status":"promoted","source":"mycomind4-arch/ruth-solv-flow:supabase/functions/_shared/cloudflare-ai.ts","domain":"provider"},
+    {"id":"document.untrusted-input","status":"promoted","source":"mycomind4-arch/immigration-mail:AI analysis security boundary","domain":"generic"},
+    {"id":"approval.consequential-action","status":"promoted","source":"mycomind4-arch/immigration-mail:voice approval boundary","domain":"generic"},
+    {"id":"mail.fulfillment","status":"canonical-in-mailmypdf","source":"mycomind4-arch/mailmypdf","domain":"ecosystem"},
+    {"id":"mail.tracking-proof","status":"canonical-in-mailmypdf","source":"mycomind4-arch/mailmypdf","domain":"ecosystem"},
+    {"id":"integrity.sha256-document-identity","status":"promoted","source":"mycomind4-arch/TrustTrace:lib/hash","domain":"generic"},
+    {"id":"privacy.redaction","status":"candidate","source":"mycomind4-arch/TrustTrace:lib/redact","domain":"generic"},
+    {"id":"security.rate-limit","status":"candidate","source":"mycomind4-arch/TrustTrace:lib/reports","domain":"generic"},
+    {"id":"investigation.evidence-report","status":"candidate","source":"mycomind4-arch/TrustTrace:app/api/reports","domain":"generic"},
+    {"id":"search.evidence-collection","status":"candidate","source":"mycomind4-arch/advanced-search","domain":"generic"},
+    {"id":"investigation.orchestration","status":"candidate","source":"mycomind4-arch/ruthlessinvestigator","domain":"generic"},
+    {"id":"documents.image-preprocessing","status":"candidate","source":"mycomind4-arch/image-upscale","domain":"generic"},
+    {"id":"documents.redaction-workflow","status":"candidate","source":"mycomind4-arch/redact-desk","domain":"generic"},
+    {"id":"access.policy-enforcement","status":"candidate","source":"mycomind4-arch/AccessForge","domain":"generic"},
+    {"id":"integrity.verifiable-record","status":"candidate","source":"mycomind4-arch/civic-ledger","domain":"generic"},
+    {"id":"proof.parcel-evidence","status":"candidate","source":"mycomind4-arch/ParcelProof","domain":"generic"},
+    {"id":"policy.rule-engine","status":"candidate","source":"mycomind4-arch/FairProcess:packages/policy-engine","domain":"generic"},
+    {"id":"case.timeline","status":"promoted","source":"mycomind4-arch/mailmypdf-platform:packages/intelligence/src/timeline.ts","domain":"generic"},
+    {"id":"case.deadline-engine","status":"promoted","source":"mycomind4-arch/mailmypdf-platform:packages/intelligence/src/deadline.ts","domain":"generic"},
+    {"id":"case.contradiction-engine","status":"promoted","source":"mycomind4-arch/mailmypdf-platform:packages/intelligence/src/contradiction.ts","domain":"generic"},
+    {"id":"case.missing-information","status":"promoted","source":"mycomind4-arch/notice-respond:src/domain/missing-info.ts","domain":"generic"},
+    {"id":"case.quality-engine","status":"promoted","source":"mycomind4-arch/notice-respond:src/domain/quality.ts","domain":"generic"},
+    {"id":"case.explainability","status":"promoted","source":"mycomind4-arch/notice-respond:src/domain/explainability.ts","domain":"generic"},
+    {"id":"security.document-input-boundary","status":"promoted","source":"mycomind4-arch/notice-respond:src/domain/security.ts","domain":"generic"},
+    {"id":"response.versioning","status":"candidate","source":"mycomind4-arch/notice-respond:src/domain/versioning.ts","domain":"generic"}
+  ]
+}

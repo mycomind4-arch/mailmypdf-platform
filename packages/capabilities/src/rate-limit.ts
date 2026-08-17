@@ -1,0 +1,3 @@
+export type RateLimitDecision = { allowed:boolean; remaining:number; resetAt:number };
+export interface RateLimiter { consume(key:string,limit:number,windowMs:number):Promise<RateLimitDecision>; }
+export class MemoryRateLimiter implements RateLimiter { private buckets=new Map<string,{count:number;resetAt:number}>(); async consume(key:string,limit:number,windowMs:number):Promise<RateLimitDecision>{ const now=Date.now(); const current=this.buckets.get(key); const bucket=!current||current.resetAt<=now?{count:0,resetAt:now+windowMs}:current; if(bucket.count>=limit)return{allowed:false,remaining:0,resetAt:bucket.resetAt}; bucket.count++; this.buckets.set(key,bucket); return{allowed:true,remaining:Math.max(0,limit-bucket.count),resetAt:bucket.resetAt}; } }
