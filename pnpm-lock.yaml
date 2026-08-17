@@ -26,8 +26,52 @@ importers:
   packages/capabilities: {}
   packages/core: {}
   packages/design-system: {}
-  packages/ecosystem: {}
+
+  packages/document-intelligence:
+    dependencies:
+      '@mailmypdf/core':
+        specifier: workspace:*
+        version: link:../core
+      '@mailmypdf/documents':
+        specifier: workspace:*
+        version: link:../documents
+
+  packages/documents:
+    dependencies:
+      '@mailmypdf/core':
+        specifier: workspace:*
+        version: link:../core
+
+  packages/ecosystem:
+    dependencies:
+      '@mailmypdf/core':
+        specifier: workspace:*
+        version: link:../core
+
   packages/evidence: {}
+
+  packages/fulfillment:
+    dependencies:
+      '@mailmypdf/core':
+        specifier: workspace:*
+        version: link:../core
+
+  packages/intelligence:
+    dependencies:
+      '@mailmypdf/core':
+        specifier: workspace:*
+        version: link:../core
+      '@mailmypdf/documents':
+        specifier: workspace:*
+        version: link:../documents
+
+  packages/proof:
+    dependencies:
+      '@mailmypdf/core':
+        specifier: workspace:*
+        version: link:../core
+
+  packages/redaction: {}
   packages/search: {}
   packages/vertical-factory: {}
   packages/voice:
