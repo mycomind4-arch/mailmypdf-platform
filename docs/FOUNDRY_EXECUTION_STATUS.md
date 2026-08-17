@@ -39,13 +39,26 @@
 39. Added execution cost budget gate.
 40. Added rollback, duplicate-run locking, and audit-record boundaries for resilient execution.
 
+## Milestones 41-50
+
+41. Added scoped provider capabilities with optional expiration.
+42. Added expiring approval records for consequential actions.
+43. Added domain policy enforcement.
+44. Added explicit rehearsal/preview/production environment boundaries.
+45. Added provider-level execution events.
+46. Added quality budgets for blockers, warnings, and minimum score.
+47. Added normalized vertical opportunity scoring.
+48. Added idempotent stage execution to prevent duplicate actions.
+49. Added the next integration-ready policy layer without embedding credentials.
+50. Established the production integration gate: real providers must pass health, scope, approval, security, cost, integrity, and idempotency checks before execution.
+
 ## Execution lifecycle
 
 `RESEARCH → SELECT → SPECIFY → BUILD → QA → RED_TEAM → VERIFY → DEPLOY → REGISTER`
 
 ## Current boundary
 
-The Foundry is now ready for real provider integration. Real provider adapters must remain credential-scoped and policy-controlled. Production deployment and ecosystem registration remain gated by explicit verification/approval policy.
+The Foundry has completed its policy/control-plane foundation and is ready to connect credential-scoped real providers. Production deployment and ecosystem registration remain explicitly gated.
 
 ## Protected boundary
 
