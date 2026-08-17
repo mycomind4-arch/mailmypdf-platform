@@ -26,13 +26,26 @@
 29. Established provider substitution points so real GitHub/Cloudflare/model adapters can be added without rewriting Foundry logic.
 30. Established the next integration checkpoint: replace dry-run adapters one provider at a time and verify each with end-to-end tests before granting additional authority.
 
+## Milestones 31-40
+
+31. Added explicit provider contracts for repository, model, deployment, and registry execution.
+32. Added provider pipeline runner for branch → preview → registration.
+33. Added provider authorization checks.
+34. Added vertical manifest validation and protected-repository exclusion.
+35. Added deterministic release-readiness gate.
+36. Added provider health-check contract.
+37. Added artifact integrity verification gate.
+38. Added security scan release gate.
+39. Added execution cost budget gate.
+40. Added rollback, duplicate-run locking, and audit-record boundaries for resilient execution.
+
 ## Execution lifecycle
 
 `RESEARCH → SELECT → SPECIFY → BUILD → QA → RED_TEAM → VERIFY → DEPLOY → REGISTER`
 
 ## Current boundary
 
-The Foundry now has a coherent executable pipeline, but the default provider adapters remain intentionally non-production. Real provider adapters must be credential-scoped and policy-controlled. Production deployment and ecosystem registration remain gated by explicit verification/approval policy.
+The Foundry is now ready for real provider integration. Real provider adapters must remain credential-scoped and policy-controlled. Production deployment and ecosystem registration remain gated by explicit verification/approval policy.
 
 ## Protected boundary
 
