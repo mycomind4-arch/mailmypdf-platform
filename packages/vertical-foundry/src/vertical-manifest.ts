@@ -1,3 +1,47 @@
+/**
+ * Vertical Manifest — the canonical schema for a generated vertical.
+ *
+ * A manifest is produced at the end of the research phase and carries
+ * through specification → implementation → QA → deployment → registration.
+ * Each gate appends its results to the manifest's gateHistory.
+ *
+ * INVARIANT: The original MailMyPDF repository is never a vertical target.
+ */
+
+// ── Gate Status ─────────────────────────────────────────────────────────────
+
+export type GateName = 'research' | 'specification' | 'implementation' | 'qa' | 'deployment' | 'registration'
+export type ManifestGateStatus = 'pending' | 'in_progress' | 'passed' | 'failed' | 'skipped'
+
+export interface GateRecord {
+  gate: GateName
+  status: ManifestGateStatus
+  startedAt: string
+  completedAt?: string
+  evidence?: string
+  artifacts?: string[]
+  notes?: string
+}
+
+// ── Build Configuration ──────────────────────────────────────────────────────
+
+export interface BuildFile {
+  path: string
+  content: string
+  description?: string
+}
+
+export interface BuildConfig {
+  framework: 'next' | 'astro' | 'vite' | 'static'
+  entryPoint: string
+  files: BuildFile[]
+  dependencies: Record<string, string>
+  buildCommand: string
+  outputDir: string
+}
+
+// ── Vertical Manifest ────────────────────────────────────────────────────────
+
 export interface VerticalManifest {
   id: string
   name: string
@@ -6,13 +50,86 @@ export interface VerticalManifest {
   branch: string
   capabilities: string[]
   generatedAt: string
+
+  // Extended fields (optional for backward compat with minimal manifests)
+  description?: string
+  targetGeography?: string
+  targetLanguage?: string
+  seedTopics?: string[]
+  keywords?: Array<{ keyword: string; score: number; intent: string }>
+  buildConfig?: BuildConfig
+  gateHistory?: GateRecord[]
+  previewUrl?: string
+  productionUrl?: string
+  registrationId?: string
+  excludedRepositories?: string[]
 }
+
+// ── Validation ───────────────────────────────────────────────────────────────
+
+const ORIGINAL_REPO = 'mycomind4-arch/mailmypdf'
 
 export function createManifest(input: Omit<VerticalManifest, 'generatedAt'>): VerticalManifest {
   return { ...input, generatedAt: new Date().toISOString() }
 }
 
-export function validateManifest(manifest: VerticalManifest): void {
-  if (!manifest.id || !manifest.name || !manifest.domain || !manifest.repository || !manifest.branch) throw new Error('Invalid vertical manifest')
-  if (manifest.domain === 'mailmypdf.com' || manifest.repository.includes('/mailmypdf')) throw new Error('Original MailMyPDF must remain outside autonomous vertical migration')
+export function validateManifest(manifest: VerticalManifest, originalRepository: string = ORIGINAL_REPO): void {
+  if (!manifest.id) throw new Error('Vertical manifest missing required field: id')
+  if (!manifest.name) throw new Error('Vertical manifest missing required field: name')
+  if (!manifest.domain) throw new Error('Vertical manifest missing required field: domain')
+  if (!manifest.repository) throw new Error('Vertical manifest missing required field: repository')
+  if (!manifest.branch) throw new Error('Vertical manifest missing required field: branch')
+
+  // Original MailMyPDF must remain outside autonomous vertical migration
+  if (manifest.repository === originalRepository) {
+    throw new Error('Original MailMyPDF repository is outside autonomous vertical scope')
+  }
+  if (manifest.excludedRepositories?.includes(originalRepository)) {
+    throw new Error('Original MailMyPDF repository is excluded from vertical scope')
+  }
+  if (manifest.domain === 'mailmypdf.com' || manifest.repository.includes('/mailmypdf')) {
+    throw new Error('Original MailMyPDF domain/repository is outside autonomous vertical scope')
+  }
+}
+
+// ── Gate History Helpers ──────────────────────────────────────────────────────
+
+export function startGate(manifest: VerticalManifest, gate: GateName): VerticalManifest {
+  const record: GateRecord = { gate, status: 'in_progress', startedAt: new Date().toISOString() }
+  return { ...manifest, gateHistory: [...(manifest.gateHistory ?? []), record] }
+}
+
+export function completeGate(
+  manifest: VerticalManifest,
+  gate: GateName,
+  status: 'passed' | 'failed' | 'skipped',
+  evidence?: string,
+  artifacts?: string[],
+): VerticalManifest {
+  const history = manifest.gateHistory ?? []
+  const existing = history.find((g) => g.gate === gate && g.status === 'in_progress')
+  if (!existing) throw new Error(`Cannot complete gate ${gate}: no in-progress record found`)
+
+  const updatedRecord: GateRecord = {
+    ...existing,
+    status,
+    completedAt: new Date().toISOString(),
+    ...(evidence !== undefined ? { evidence } : {}),
+    ...(artifacts !== undefined ? { artifacts } : {}),
+  }
+
+  return {
+    ...manifest,
+    gateHistory: history.map((g) => (g === existing ? updatedRecord : g)),
+  }
+}
+
+export function getLatestGateStatus(manifest: VerticalManifest, gate: GateName): ManifestGateStatus | undefined {
+  const records = (manifest.gateHistory ?? []).filter((g) => g.gate === gate)
+  return records[records.length - 1]?.status
+}
+
+export function allGatesPassed(manifest: VerticalManifest): boolean {
+  const requiredGates: GateName[] = ['research', 'specification', 'implementation', 'qa', 'deployment', 'registration']
+  return requiredGates.every((gate) => getLatestGateStatus(manifest, gate) === 'passed')
 }
