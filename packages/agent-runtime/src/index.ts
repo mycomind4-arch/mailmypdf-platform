@@ -1,6 +1,5 @@
 export type ModelClass = 'FAST' | 'REASONING' | 'VISION' | 'CODE' | 'MULTILINGUAL' | 'EMBEDDING'
 export type AgentStatus = 'queued' | 'running' | 'succeeded' | 'failed' | 'blocked'
-
 export interface AgentTask<I = unknown> { id: string; role: string; objective: string; modelClass: ModelClass; input: I; maxAttempts?: number }
 export interface AgentResult<O = unknown> { taskId: string; status: AgentStatus; output?: O; confidence?: number; evidence?: string[]; errors?: string[]; cost?: { inputTokens: number; outputTokens: number; usd?: number } }
 export interface AgentExecutor { execute<I, O>(task: AgentTask<I>): Promise<AgentResult<O>> }
@@ -20,3 +19,4 @@ export * from './mcp.js'
 export * from './memory.js'
 export * from './model-routing.js'
 export * from './telemetry.js'
+export * from './fulfillment.js'
