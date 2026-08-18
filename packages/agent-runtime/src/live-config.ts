@@ -14,11 +14,6 @@ export interface LiveIntegrationConfig {
   telemetry?: { endpoint: string };
 }
 
-function value(name: string): string | undefined {
-  const candidate = process.env[name];
-  return candidate && candidate.trim() ? candidate.trim() : undefined;
-}
-
 export function readLiveIntegrationConfig(env = process.env): LiveIntegrationConfig {
   const get = (name: string) => {
     const candidate = env[name];
