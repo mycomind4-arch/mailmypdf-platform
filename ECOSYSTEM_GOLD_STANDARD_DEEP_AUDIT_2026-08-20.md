@@ -29,6 +29,12 @@ Several mature verticals had transition functions that could return success with
 
 Status: **fixed in Notice Respond**.
 
+### P0 — review silently becoming authorization
+
+Notice Respond's `setReviewChecks()` previously set `approved = true` automatically when all review checkboxes were selected. That collapsed human review and authorization into one UI state.
+
+Status: **fixed**. Review checks now establish review completion; explicit `approveWorkflow()` is required before mailing/checkout.
+
 ### P0 — provenance-free Gold stages
 
 GovReply, Code Enforcement, and Small Business Gold runners accepted bare boolean success values. A dependency could return `true` with no source, document, provider, actor, tracking, or proof evidence.
@@ -45,11 +51,21 @@ Remaining: the external MailMyPDF service must honor the idempotency key in depl
 
 ### P0 — caller-supplied approval actor
 
-Records Requests approval accepts an `actor` string from the request body. That value is recorded as audit attribution but is not yet an authenticated identity/role proof.
+Records Requests approval accepted an `actor` string from the request body. That value was recorded as audit attribution but was not an authenticated identity/role proof.
 
-Status: **open code-side blocker**.
+Status: **fixed code-side**. Approval now requires an injected authenticated principal with an approved role and records the verified subject. Deployment still needs the real auth/session resolver.
 
-Required: connect the approval endpoint to the real authenticated identity/authorization boundary and record the verified principal, not caller-supplied identity text.
+### P0 — UI falsely claiming physical submission
+
+Dispute Mail's Credit Report workflow previously advanced from `Pay and send` directly to a `submitted` screen without Stripe payment or a fulfillment API call.
+
+Status: **fixed**. Checkout now fails closed and explicitly reports that live payment/fulfillment is not installed.
+
+### P0 — UI-created mailing order falsely treated as submission
+
+Immigration Mail's response workflow created a Supabase `mailing_orders` row with status `draft`, then immediately displayed `Your letter has been submitted`. No Stripe charge or carrier/MailMyPDF submission occurred in that path.
+
+Status: **fixed code-side**. The current `createMailingOrder` helper now fails closed with `fulfillment_not_configured` rather than allowing the UI to reach its success screen through a draft-only record.
 
 ### P1 — capability metadata versus implementation
 
@@ -57,17 +73,23 @@ Appeal Mail previously granted capabilities from workflow steps. That loophole h
 
 Status: **fixed**.
 
-### P1 — main product versus standalone vertical registry drift
+### P1 — catalog `IMPLEMENTED` versus actual runtime registration
 
-The historical core MailMyPDF registry temporarily presented ten verticals as live product surfaces. The current architecture intentionally separates the three next-generation master verticals from legacy/standalone migration targets.
+Appeal Mail's customer-facing catalog uses static `IMPLEMENTED` / `executable` fields. Production code did not contain a `registerDomainPack` or `constructWorkflow` call path, so the static flag could outrun runtime reality.
 
-The correct model is now:
+Status: **fixed in UI**. Customer-facing “Executable workflow” now additionally requires a registered domain pack and a non-blueprint constructed workflow.
 
-- MailMyPDF = shared platform/master vertical directory.
-- Standalone repos = workflow homes for specialized verticals.
-- Platform certification ledger = authoritative engineering readiness, not marketing status.
+### P1 — certification runner not referenced by production runtime
 
-Status: **architecture clarified**.
+Usage searches show the new Small Business, GovReply, and Code Enforcement Gold runners are currently not referenced by production code. They are certification assets, not execution enforcement yet.
+
+Status: **open**. Ledger correctly classifies those verticals as `domain-ready` until production runtime calls the Gold runner.
+
+### P1 — test command skipped TypeScript domain suites
+
+Dispute Mail and Immigration Mail had TypeScript Gold/domain tests outside their normal test command.
+
+Status: **fixed** by moving their primary test command to Vitest and including the domain suites.
 
 ## Repository audit matrix
 
@@ -75,36 +97,36 @@ Status: **architecture clarified**.
 |---|---|---|---|
 | `mailmypdf-platform` | executable foundation | canonical pipeline, domain-pack contract, ecosystem certification ledger, CI | networked lockfile/build verification and sibling-runtime integration |
 | `mailmypdf` | shared production platform | payment/fulfillment/security hardening, retention, rate limiting, private PDFs | operational secrets, cron, alerting, bot protection, E2E provider verification |
-| `notice-respond` | executable | mature CP14/CP2000 stack, strict runtime gate, regression suite | deployed provider/path certification |
-| `appeal-mail` | executable domain/runtime | pack-backed factory, quality gates, capability regressions | deployed submission/tracking/proof |
-| `dispute-mail` credit-report | executable domain | deterministic analysis, evidence/finding gates, submission gate | runtime wiring, deployed fulfillment |
+| `notice-respond` | executable | mature CP14/CP2000 stack, strict sequential runtime gate, explicit approval, regression suite | deployed provider/path certification and runtime import coverage |
+| `appeal-mail` | domain-ready | pack-backed factory, quality gates, capability regressions, runtime-aware customer status | factory/runtime pack registration, deployed submission/tracking/proof |
+| `dispute-mail` credit-report | domain-ready | deterministic analysis, evidence/finding gates, false-submit UI removed | actual runtime wiring, Stripe/fulfillment, tracking/proof |
 | `dispute-mail` other workflows | catalog | explicit partial state | domain packs/analysis |
-| `immigration-mail` | executable domain/runtime | document understanding, preflight, validation/review/approval/mail/proof gates | deployed fulfillment/tracking/proof |
-| `mailmypdf-smallbusiness` | executable workflow framework | Trigger.dev durable task, approval ordering, evidence-bearing Gold runner | persistence, authenticated scheduling, fulfillment, tracking, proof, team auth |
-| `gov-reply` | domain-ready | source-grounded AI worker, evidence-bearing Gold runner | persistence, runtime execution, fulfillment, tracking/proof |
-| `code-enforcement` | domain-ready | evidence-bearing lifecycle runner and tests | real runtime wiring, property/jurisdiction engines, fulfillment |
-| `records-requests` | executable | D1 repo, DB constraints, server-side attested PDF, idempotent provider boundary, HMAC callback | D1 provisioning, authenticated approval, live provider, deployed E2E |
-| `permit-response` | domain-ready | permit-specific contract and tests | Code Enforcement/shared runtime boundary |
-| `benefits-appeal` | domain-ready | benefits-specific contract and tests | Appeal Mail/FairProcess runtime boundary |
-| `debt-defense` | catalog | explicit execution decision | must validate reuse inside Dispute Mail |
+| `immigration-mail` | domain-ready | document understanding, preflight, validation/review/approval/mail/proof gates | actual payment/provider path, deployed fulfillment/tracking/proof |
+| `mailmypdf-smallbusiness` | domain-ready | Trigger.dev durable task, approval ordering, evidence-bearing Gold runner | runner not wired into executor, persistence, scheduling auth, fulfillment, tracking, proof, team permissions |
+| `gov-reply` | domain-ready | source-grounded AI worker, evidence-bearing Gold runner | runner not wired into executor, persistence, fulfillment, tracking/proof |
+| `code-enforcement` | domain-ready | evidence-bearing lifecycle runner/tests | runner not wired into executor, property/jurisdiction runtime, fulfillment |
+| `records-requests` | executable | D1 repo, DB constraints, server-side attested PDF, idempotent provider boundary, fail-closed approval, HMAC callback | D1 provisioning, real auth resolver, live provider, deployed E2E |
+| `permit-response` | domain-ready | permit-specific contract/tests | Code Enforcement/shared runtime boundary |
+| `benefits-appeal` | domain-ready | benefits-specific contract/tests | Appeal Mail/FairProcess runtime boundary |
+| `debt-defense` | catalog | explicit execution decision | reuse must first be proven inside Dispute Mail |
 | `tenant-reply` | catalog | explicit execution decision | shared runtime not connected |
 | `insurance-claims` | catalog | planned UI/workflow directory | shared intelligence/runtime not connected |
 
 ## Gold Standard priority order for the day
 
-### Wave 1 — close runtime bypasses
+### Wave 1 — close runtime bypasses and false-success UI
 
-1. Notice Respond — verify all forward navigation and mailing entry points use the strict runtime.
-2. Records Requests — authenticate approval; verify submit/retry/idempotency invariants.
-3. Dispute Mail — wire `canApproveDispute` and `canSubmitDispute` into the real runtime.
-4. Appeal Mail — wire factory capability state to actual workflow execution.
+1. Notice Respond — verify all production entry points use the strict runtime and explicit approval.
+2. Records Requests — verify auth resolver + submit idempotency + callback on deployed runtime.
+3. Immigration Mail — replace draft-order persistence with actual authenticated payment + MailMyPDF submission before showing success.
+4. Dispute Mail — wire `canApproveDispute` and `canSubmitDispute` into the real runtime.
 
-### Wave 2 — convert contract runners into real executable runtimes
+### Wave 2 — connect certification runners to production execution
 
-5. Immigration Mail — wire certification to actual mailing entry points.
-6. Small Business — connect Gold runner to real workflow executor and Trigger task; make persistence/approval/tracking durable.
-7. GovReply — add persisted case lifecycle and real submission boundary.
-8. Code Enforcement — connect jurisdiction/property/evidence engines to the Gold runner.
+5. Appeal Mail — register concrete domain packs and make the factory the actual execution boundary.
+6. Small Business — connect Gold runner to the actual executor/Trigger task and make persistence/approval/tracking durable.
+7. GovReply — add persisted case lifecycle and route execution through the Gold runner.
+8. Code Enforcement — connect jurisdiction/property/evidence services to the Gold runner.
 
 ### Wave 3 — activate dependent verticals
 
@@ -128,13 +150,17 @@ Every Gold runner should have regression coverage proving:
 1. a successful-looking stage with no provenance blocks;
 2. missing evidence blocks consequential action;
 3. failed validation blocks review/approval/mailing;
-4. missing approval blocks mailing;
-5. incomplete recipient blocks submission;
-6. provider failure creates a deterministic recoverable state;
-7. provider success cannot be duplicated by retry;
-8. tracking must exist before completion;
-9. proof must exist before Gold completion;
-10. users cannot jump directly to consequential steps through alternate navigation paths.
+4. review completion does not automatically grant approval;
+5. missing approval blocks mailing;
+6. incomplete recipient blocks submission;
+7. provider failure creates a deterministic recoverable state;
+8. provider success cannot be duplicated by retry;
+9. tracking must exist before completion;
+10. proof must exist before Gold completion;
+11. users cannot jump directly to consequential steps through alternate navigation paths;
+12. the production executor actually invokes the certified Gold runner;
+13. a database draft/order record cannot be presented as physical mailing submission;
+14. customer-facing “executable” labels are backed by real runtime capability registration.
 
 ## External-agent handoff
 
