@@ -72,7 +72,7 @@ export const ECOSYSTEM_CERTIFICATIONS: readonly EcosystemCertification[] = [
     status: "domain-ready",
     executableCapabilities: ["trigger", "document", "validation", "approval", "mailing", "tracking", "proof", "archive"],
     blockedBy: ["Gold runner is not referenced by production executor", "persistent production storage", "authenticated scheduling API", "live MailMyPDF credentials", "carrier webhooks", "permanent proof storage", "team permissions", "deployed smoke certification"],
-    evidence: ["Trigger.dev durable execution boundary", "approval-before-send certification", "evidence-bearing Gold runner", "runner usage audit"],
+    evidence: ["Trigger.dev durable execution boundary", "approval-before-send certification", "evidence-bearing Gold runner", "runner usage audit", "MailMyPDF provider response schema validation and mail-job correlation checks"],
   },
   {
     repo: "gov-reply",
