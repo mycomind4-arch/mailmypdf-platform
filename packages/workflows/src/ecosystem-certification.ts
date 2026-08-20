@@ -1,9 +1,10 @@
 /**
  * Static ecosystem certification ledger.
  *
- * This is intentionally metadata-only: the platform repository cannot execute
- * code from sibling vertical repositories at runtime yet. Each entry therefore
- * records the strongest state actually demonstrated in that vertical repo.
+ * Metadata-only by design: the platform does not dynamically execute sibling
+ * vertical repositories. Each entry records the strongest state demonstrated
+ * by the vertical's own code/tests, with deployment and external-provider work
+ * kept explicitly separate from code-side readiness.
  */
 
 export type EcosystemStatus = "catalog" | "domain-ready" | "executable" | "gold";
@@ -25,8 +26,8 @@ export const ECOSYSTEM_CERTIFICATIONS: readonly EcosystemCertification[] = [
     engine: "document-action",
     status: "executable",
     executableCapabilities: ["classification", "extraction", "deadlines", "discrepancies", "evidence", "research", "strategy", "draft", "validation", "review", "approval", "mailing"],
-    blockedBy: ["strict runtime gate still needs wiring into workflow-runtime.ts", "deployed provider/path certification"],
-    evidence: ["815 passing tests and successful Cloudflare build were previously documented for the reference implementation"],
+    blockedBy: ["deployed provider/path certification"],
+    evidence: ["strict sequential runtime gate", "runtime transition regression suite", "reference implementation test/build history"],
   },
   {
     repo: "appeal-mail",
@@ -35,7 +36,7 @@ export const ECOSYSTEM_CERTIFICATIONS: readonly EcosystemCertification[] = [
     status: "executable",
     executableCapabilities: ["document-classification", "fact-extraction", "deadline-analysis", "evidence-analysis", "contradiction-analysis", "drafting", "draft-validation", "readiness-review"],
     blockedBy: ["production submission/tracking/proof certification", "deployed-path verification"],
-    evidence: ["factory capability gate and regression tests"],
+    evidence: ["factory capability gate", "pack-backed capability resolution", "factory regression tests"],
   },
   {
     repo: "dispute-mail",
@@ -43,8 +44,17 @@ export const ECOSYSTEM_CERTIFICATIONS: readonly EcosystemCertification[] = [
     engine: "dispute",
     status: "executable",
     executableCapabilities: ["classification", "extraction", "evidence", "strategy", "validation", "approval", "mailing", "tracking", "proofAudit"],
-    blockedBy: ["deployed fulfillment certification", "remote CI status absent"],
-    evidence: ["credit-report domain analyzer", "consequential approval/submission regression gates"],
+    blockedBy: ["runtime wiring for all consequential predicates", "deployed fulfillment certification", "remote CI verification"],
+    evidence: ["credit-report domain analyzer", "evidence/finding blocking predicates", "consequential submission regression gates"],
+  },
+  {
+    repo: "dispute-mail",
+    workflow: "debt-validation,billing-error,unauthorized-charge",
+    engine: "dispute",
+    status: "catalog",
+    executableCapabilities: [],
+    blockedBy: ["dedicated domain packs and executable analysis not yet implemented"],
+    evidence: ["explicit partial/catalog lifecycle metadata"],
   },
   {
     repo: "immigration-mail",
@@ -52,26 +62,44 @@ export const ECOSYSTEM_CERTIFICATIONS: readonly EcosystemCertification[] = [
     engine: "document-action",
     status: "executable",
     executableCapabilities: ["document", "facts", "deadlines", "evidence", "authority", "strategy", "draft", "validation", "review", "approval", "mailing", "tracking", "proof"],
-    blockedBy: ["deployed fulfillment certification", "remote CI status not established in this pass"],
-    evidence: ["document-understanding", "preflight", "Gold certification gate and regression coverage"],
+    blockedBy: ["deployed fulfillment certification", "remote CI verification"],
+    evidence: ["document-understanding", "preflight", "Gold certification gate", "consequential regression coverage"],
   },
   {
     repo: "mailmypdf-smallbusiness",
     workflow: "business-workflows",
-    engine: "records",
+    engine: "document-action",
     status: "executable",
-    executableCapabilities: ["scheduling", "approval", "mailing", "tracking", "proof"],
-    blockedBy: ["persistent production storage", "authenticated scheduling API", "live MailMyPDF credentials", "carrier webhooks", "permanent proof storage", "team permissions"],
-    evidence: ["Trigger.dev v4 durable execute-mail-job", "workflow capability certification", "approval-before-send regression gate"],
+    executableCapabilities: ["trigger", "document", "validation", "approval", "mailing", "tracking", "proof", "archive"],
+    blockedBy: ["persistent production storage", "authenticated scheduling API", "live MailMyPDF credentials", "carrier webhooks", "permanent proof storage", "team permissions", "deployed smoke certification"],
+    evidence: ["Trigger.dev durable execution boundary", "approval-before-send certification", "evidence-bearing Gold runner"],
+  },
+  {
+    repo: "gov-reply",
+    workflow: "government-response",
+    engine: "document-action",
+    status: "domain-ready",
+    executableCapabilities: ["receive", "understand", "deadline", "evidence", "strategy", "response", "review", "authorization", "submission", "tracking", "proof"],
+    blockedBy: ["actual persistence/execution runtime", "MailMyPDF fulfillment integration", "deployed tracking/proof", "live CI verification"],
+    evidence: ["evidence-bearing Gold runner", "source-grounded AI analysis worker", "Gold regression tests"],
+  },
+  {
+    repo: "code-enforcement",
+    workflow: "code-enforcement-response",
+    engine: "jurisdictional",
+    status: "domain-ready",
+    executableCapabilities: ["secure-ingest", "classify", "extract", "timeline", "evidence", "discrepancies", "strategy", "draft", "validate", "review", "authorization", "submit", "track", "proof"],
+    blockedBy: ["actual domain runtime wiring", "property/jurisdiction infrastructure", "MailMyPDF fulfillment", "deployed verification"],
+    evidence: ["evidence-bearing Gold runner", "Gold regression tests"],
   },
   {
     repo: "records-requests",
     workflow: "records-request",
     engine: "records",
     status: "executable",
-    executableCapabilities: ["validation", "review", "approval", "PDF rendering", "document hash", "submission", "tracking", "proof callback"],
-    blockedBy: ["real D1 provisioning", "live MailMyPDF credentials", "deployed integration test"],
-    evidence: ["D1-compatible repository", "state machine", "PDF renderer", "HMAC callback verification"],
+    executableCapabilities: ["validation", "review", "approval", "PDF rendering", "SHA-256 attestation", "idempotent submission", "tracking", "proof callback"],
+    blockedBy: ["real D1 provisioning", "live MailMyPDF credentials", "deployed integration test", "authenticated approval actor", "production webhook registration"],
+    evidence: ["D1-compatible repository", "database lifecycle constraints", "attested server-side PDF", "idempotent provider request", "HMAC callback verification"],
   },
   {
     repo: "permit-response",
@@ -79,7 +107,7 @@ export const ECOSYSTEM_CERTIFICATIONS: readonly EcosystemCertification[] = [
     engine: "jurisdictional",
     status: "domain-ready",
     executableCapabilities: ["permit-specific requirements", "evidence mapping", "authority checks"],
-    blockedBy: ["shared Code Enforcement runtime boundary not verified"],
+    blockedBy: ["shared Code Enforcement runtime boundary", "actual execution path", "fulfillment/tracking/proof"],
     evidence: ["permit-specific domain contract and tests"],
   },
   {
@@ -88,8 +116,35 @@ export const ECOSYSTEM_CERTIFICATIONS: readonly EcosystemCertification[] = [
     engine: "appeal",
     status: "domain-ready",
     executableCapabilities: ["issue extraction", "evidence gating", "authority checks", "appeal validation"],
-    blockedBy: ["shared Appeal Mail/FairProcess runtime boundary not verified"],
+    blockedBy: ["shared Appeal Mail/FairProcess runtime boundary", "actual execution path", "filing/mail/proof integration"],
     evidence: ["benefits-specific contract and tests"],
+  },
+  {
+    repo: "debt-defense",
+    workflow: "debt-defense",
+    engine: "dispute",
+    status: "catalog",
+    executableCapabilities: [],
+    blockedBy: ["dedicated repo contains architecture/SEO decisions only", "must first validate reuse inside Dispute Mail"],
+    evidence: ["execution decision explicitly defers implementation until reuse is proven"],
+  },
+  {
+    repo: "tenant-reply",
+    workflow: "tenant-reply",
+    engine: "document-action",
+    status: "catalog",
+    executableCapabilities: [],
+    blockedBy: ["planned vertical; dedicated repo contains architecture/SEO decisions only", "shared infrastructure runtime not connected"],
+    evidence: ["execution decision explicitly defers implementation"],
+  },
+  {
+    repo: "insurance-claims",
+    workflow: "insurance-claims",
+    engine: "document-action",
+    status: "catalog",
+    executableCapabilities: [],
+    blockedBy: ["planned vertical", "current repo is primarily UI/workflow catalog", "shared intelligence and fulfillment runtime not connected"],
+    evidence: ["README explicitly marks vertical as planned"],
   },
 ] as const;
 
