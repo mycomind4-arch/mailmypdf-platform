@@ -29,3 +29,37 @@ export const ECOSYSTEM_CERTIFICATIONS: readonly EcosystemCertification[] = [
 export function getEcosystemCertification(repo:string, workflow:string):EcosystemCertification|undefined { return ECOSYSTEM_CERTIFICATIONS.find(e=>e.repo===repo&&e.workflow===workflow); }
 export function isEcosystemExecutable(entry:EcosystemCertification):boolean { return entry.status === "executable" || entry.status === "gold"; }
 export function isEcosystemGold(entry:EcosystemCertification):boolean { return entry.status === "gold" && entry.blockedBy.length === 0; }
+
+export type CertificationInvariant = {
+  repo: string;
+  workflow: string;
+  valid: boolean;
+  reasons: string[];
+};
+
+/**
+ * Validate the ledger itself. This prevents certification metadata from
+ * becoming less trustworthy than the underlying workflow evidence.
+ */
+export function validateEcosystemCertificationLedger(
+  entries: readonly EcosystemCertification[] = ECOSYSTEM_CERTIFICATIONS,
+): CertificationInvariant[] {
+  return entries.map((entry) => {
+    const reasons: string[] = [];
+    if (entry.status === "gold" && entry.blockedBy.length > 0) {
+      reasons.push("Gold certification cannot have unresolved blockers");
+    }
+    if (isEcosystemExecutable(entry) && entry.evidence.length === 0) {
+      reasons.push("Executable certification requires evidence");
+    }
+    if (entry.status === "catalog" && entry.executableCapabilities.length > 0) {
+      reasons.push("Catalog entries cannot claim executable capabilities");
+    }
+    return {
+      repo: entry.repo,
+      workflow: entry.workflow,
+      valid: reasons.length === 0,
+      reasons,
+    };
+  });
+}
