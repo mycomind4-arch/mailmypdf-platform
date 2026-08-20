@@ -49,11 +49,11 @@ Status: **hardened** with deterministic idempotency key derived from request ID 
 
 Remaining: the external MailMyPDF service must honor the idempotency key in deployed execution.
 
-### P0 — caller-supplied approval actor
+### P0 — caller-supplied approval/submission actor
 
-Records Requests approval accepted an `actor` string from the request body. That value was recorded as audit attribution but was not an authenticated identity/role proof.
+Records Requests approval and submission paths previously accepted caller-supplied audit identity text.
 
-Status: **fixed code-side**. Approval now requires an injected authenticated principal with an approved role and records the verified subject. Deployment still needs the real auth/session resolver.
+Status: **fixed code-side**. Approval and submission now require an injected authenticated principal with an approved role and record the verified subject. Resolver failures fail closed. Deployment still needs the real auth/session resolver.
 
 ### P0 — UI falsely claiming physical submission
 
@@ -65,7 +65,7 @@ Status: **fixed**. Checkout now fails closed and explicitly reports that live pa
 
 Immigration Mail's response workflow created a Supabase `mailing_orders` row with status `draft`, then immediately displayed `Your letter has been submitted`. No Stripe charge or carrier/MailMyPDF submission occurred in that path.
 
-Status: **fixed code-side**. The current `createMailingOrder` helper now fails closed with `fulfillment_not_configured` rather than allowing the UI to reach its success screen through a draft-only record.
+Status: **fixed code-side**. The current mailing helper now fails closed with `fulfillment_not_configured` rather than allowing the UI to reach its success screen through a draft-only record. A real payment/provider boundary is still required.
 
 ### P1 — capability metadata versus implementation
 
@@ -75,7 +75,7 @@ Status: **fixed**.
 
 ### P1 — catalog `IMPLEMENTED` versus actual runtime registration
 
-Appeal Mail's customer-facing catalog uses static `IMPLEMENTED` / `executable` fields. Production code did not contain a `registerDomainPack` or `constructWorkflow` call path, so the static flag could outrun runtime reality.
+Appeal Mail's customer-facing catalog uses static `IMPLEMENTED` / `executable` fields. Production code did not contain a verified `registerDomainPack` / `constructWorkflow` execution path, so the static flag could outrun runtime reality.
 
 Status: **fixed in UI**. Customer-facing “Executable workflow” now additionally requires a registered domain pack and a non-blueprint constructed workflow.
 
@@ -89,23 +89,29 @@ Status: **open**. Ledger correctly classifies those verticals as `domain-ready` 
 
 Dispute Mail and Immigration Mail had TypeScript Gold/domain tests outside their normal test command.
 
-Status: **fixed** by moving their primary test command to Vitest and including the domain suites.
+Status: **fixed** by moving their primary test command to include the domain suites.
+
+### P1 — provider response trust boundary
+
+Small Business's MailMyPDF client previously accepted arbitrary JSON as a successful execution result.
+
+Status: **fixed**. Provider execution responses are schema-validated, must contain a non-empty lifecycle status, and must reference the same mail job that was submitted. Regression tests cover malformed and cross-job responses.
 
 ## Repository audit matrix
 
 | Repo | Strongest state | Key evidence | Main blockers |
 |---|---|---|---|
-| `mailmypdf-platform` | executable foundation | canonical pipeline, domain-pack contract, ecosystem certification ledger, CI | networked lockfile/build verification and sibling-runtime integration |
+| `mailmypdf-platform` | executable foundation | canonical pipeline, domain-pack contract, certification ledger, CI config | sibling-runtime integration and networked verification |
 | `mailmypdf` | shared production platform | payment/fulfillment/security hardening, retention, rate limiting, private PDFs | operational secrets, cron, alerting, bot protection, E2E provider verification |
-| `notice-respond` | executable | mature CP14/CP2000 stack, strict sequential runtime gate, explicit approval, regression suite | deployed provider/path certification and runtime import coverage |
+| `notice-respond` | domain-ready | mature CP14/CP2000 stack, strict sequential runtime gate, explicit approval, regression suite | explicit CP2000 approval UI, missing `/api/mail/response` route, deployed provider/path certification |
 | `appeal-mail` | domain-ready | pack-backed factory, quality gates, capability regressions, runtime-aware customer status | factory/runtime pack registration, deployed submission/tracking/proof |
 | `dispute-mail` credit-report | domain-ready | deterministic analysis, evidence/finding gates, false-submit UI removed | actual runtime wiring, Stripe/fulfillment, tracking/proof |
 | `dispute-mail` other workflows | catalog | explicit partial state | domain packs/analysis |
-| `immigration-mail` | domain-ready | document understanding, preflight, validation/review/approval/mail/proof gates | actual payment/provider path, deployed fulfillment/tracking/proof |
-| `mailmypdf-smallbusiness` | domain-ready | Trigger.dev durable task, approval ordering, evidence-bearing Gold runner | runner not wired into executor, persistence, scheduling auth, fulfillment, tracking, proof, team permissions |
+| `immigration-mail` | domain-ready | document understanding, preflight, validation/review/approval, false-success guard | actual payment/provider path, deployed fulfillment/tracking/proof |
+| `mailmypdf-smallbusiness` | domain-ready | Trigger.dev durable task, approval ordering, evidence-bearing Gold runner, provider response validation | runner not wired into executor, persistence, scheduling auth, fulfillment, tracking, proof, team permissions |
 | `gov-reply` | domain-ready | source-grounded AI worker, evidence-bearing Gold runner | runner not wired into executor, persistence, fulfillment, tracking/proof |
 | `code-enforcement` | domain-ready | evidence-bearing lifecycle runner/tests | runner not wired into executor, property/jurisdiction runtime, fulfillment |
-| `records-requests` | executable | D1 repo, DB constraints, server-side attested PDF, idempotent provider boundary, fail-closed approval, HMAC callback | D1 provisioning, real auth resolver, live provider, deployed E2E |
+| `records-requests` | executable | D1 repo, DB constraints, server-side attested PDF, idempotent provider boundary, fail-closed approval/submission identity, HMAC callback | D1 provisioning, real auth resolver, live provider, deployed E2E |
 | `permit-response` | domain-ready | permit-specific contract/tests | Code Enforcement/shared runtime boundary |
 | `benefits-appeal` | domain-ready | benefits-specific contract/tests | Appeal Mail/FairProcess runtime boundary |
 | `debt-defense` | catalog | explicit execution decision | reuse must first be proven inside Dispute Mail |
@@ -116,8 +122,8 @@ Status: **fixed** by moving their primary test command to Vitest and including t
 
 ### Wave 1 — close runtime bypasses and false-success UI
 
-1. Notice Respond — verify all production entry points use the strict runtime and explicit approval.
-2. Records Requests — verify auth resolver + submit idempotency + callback on deployed runtime.
+1. Notice Respond — wire explicit approval UX and create/verify the actual server-side mailing route.
+2. Records Requests — provision/authenticate deployment, run real D1 + provider E2E, verify callback/proof.
 3. Immigration Mail — replace draft-order persistence with actual authenticated payment + MailMyPDF submission before showing success.
 4. Dispute Mail — wire `canApproveDispute` and `canSubmitDispute` into the real runtime.
 
@@ -160,7 +166,8 @@ Every Gold runner should have regression coverage proving:
 11. users cannot jump directly to consequential steps through alternate navigation paths;
 12. the production executor actually invokes the certified Gold runner;
 13. a database draft/order record cannot be presented as physical mailing submission;
-14. customer-facing “executable” labels are backed by real runtime capability registration.
+14. provider responses are schema-validated and correlated to the requested job/case;
+15. customer-facing “executable” labels are backed by real runtime capability registration.
 
 ## External-agent handoff
 
