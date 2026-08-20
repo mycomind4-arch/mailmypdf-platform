@@ -99,7 +99,7 @@ export const ECOSYSTEM_CERTIFICATIONS: readonly EcosystemCertification[] = [
     status: "executable",
     executableCapabilities: ["validation", "review", "approval", "PDF rendering", "SHA-256 attestation", "idempotent submission", "tracking", "proof callback"],
     blockedBy: ["real D1 provisioning", "live MailMyPDF credentials", "deployed integration test", "authenticated approval resolver installation in deployment", "production webhook registration"],
-    evidence: ["D1-compatible repository", "database lifecycle constraints", "attested server-side PDF", "idempotent provider request", "HMAC callback verification", "fail-closed approval principal boundary"],
+    evidence: ["D1-compatible repository", "database lifecycle constraints", "attested server-side PDF", "idempotent provider request", "HMAC callback verification", "fail-closed approval principal boundary", "resolver errors fail closed with regression coverage"],
   },
   {
     repo: "permit-response",
