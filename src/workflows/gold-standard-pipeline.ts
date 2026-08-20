@@ -1,9 +1,9 @@
 /**
- * Canonical gold-standard workflow pipeline contract.
+ * Canonical Gold Standard workflow runner.
  *
- * This runner deliberately delegates domain intelligence to a DomainPack.
- * It does not fabricate results: unsupported stages remain explicit and block
- * certification/execution rather than being silently skipped.
+ * Domain packs own domain intelligence. The runner owns lifecycle semantics,
+ * stage ordering, and consequential-action gates. Missing capability is never
+ * silently treated as success.
  */
 
 export type PipelineStage =
@@ -17,6 +17,7 @@ export type PipelineStage =
   | "discrepancy"
   | "evidence"
   | "research"
+  | "risk"
   | "strategy"
   | "draft"
   | "draftProvenance"
@@ -25,11 +26,14 @@ export type PipelineStage =
   | "review"
   | "approval"
   | "mailing"
-  | "tracking";
+  | "tracking"
+  | "proofAudit";
+
+export type StageStatus = "passed" | "warning" | "blocked" | "failed";
 
 export interface StageResult<T = unknown> {
   stage: PipelineStage;
-  status: "passed" | "warning" | "blocked" | "failed";
+  status: StageStatus;
   data?: T;
   messages: string[];
 }
@@ -51,23 +55,32 @@ export interface DomainPack {
   discrepancies(input: GoldStandardInput, prior: readonly StageResult[]): Promise<StageResult>;
   evidence(input: GoldStandardInput, prior: readonly StageResult[]): Promise<StageResult>;
   research(input: GoldStandardInput, prior: readonly StageResult[]): Promise<StageResult>;
+  risk(input: GoldStandardInput, prior: readonly StageResult[]): Promise<StageResult>;
   strategy(input: GoldStandardInput, prior: readonly StageResult[]): Promise<StageResult>;
   draft(input: GoldStandardInput, prior: readonly StageResult[]): Promise<StageResult>;
   draftProvenance(input: GoldStandardInput, prior: readonly StageResult[]): Promise<StageResult>;
   validation(input: GoldStandardInput, prior: readonly StageResult[]): Promise<StageResult>;
+  review(input: GoldStandardInput, prior: readonly StageResult[]): Promise<StageResult>;
+  approval(input: GoldStandardInput, prior: readonly StageResult[]): Promise<StageResult>;
+  mailing(input: GoldStandardInput, prior: readonly StageResult[]): Promise<StageResult>;
+  tracking(input: GoldStandardInput, prior: readonly StageResult[]): Promise<StageResult>;
+  proofAudit(input: GoldStandardInput, prior: readonly StageResult[]): Promise<StageResult>;
 }
 
 export interface PipelineResult {
   workflowId: string;
-  status: "ready_for_review" | "blocked" | "failed";
+  status: "completed" | "ready_for_review" | "blocked" | "failed";
   stages: readonly StageResult[];
 }
 
-const requiredStages: readonly PipelineStage[] = [
+export const GOLD_STANDARD_PIPELINE_STAGES: readonly PipelineStage[] = [
   "security", "classification", "extraction", "provenance", "deadline",
   "contradiction", "findings", "discrepancy", "evidence", "research",
-  "strategy", "draft", "draftProvenance", "validation", "blockingGate",
+  "risk", "strategy", "draft", "draftProvenance", "validation",
+  "blockingGate", "review", "approval", "mailing", "tracking", "proofAudit",
 ];
+
+const intelligenceStages: readonly PipelineStage[] = GOLD_STANDARD_PIPELINE_STAGES.slice(0, 15);
 
 export async function runGoldStandardPipeline(
   workflowId: string,
@@ -75,23 +88,41 @@ export async function runGoldStandardPipeline(
   input: GoldStandardInput,
 ): Promise<PipelineResult> {
   const stages: StageResult[] = [];
-  const run = async (fn: () => Promise<StageResult>) => {
-    const result = await fn();
-    stages.push(result);
-    if (result.status === "failed" || result.status === "blocked") return false;
-    return true;
+  const run = async (stage: PipelineStage, fn: () => Promise<StageResult>) => {
+    try {
+      const result = await fn();
+      if (result.stage !== stage) {
+        stages.push({ stage, status: "failed", messages: [`Stage contract mismatch: expected ${stage}, received ${result.stage}.`] });
+        return false;
+      }
+      stages.push(result);
+      return result.status !== "failed" && result.status !== "blocked";
+    } catch (error) {
+      stages.push({ stage, status: "failed", messages: [error instanceof Error ? error.message : String(error)] });
+      return false;
+    }
   };
 
-  if (!(await run(() => pack.security(input)))) return { workflowId, status: "blocked", stages };
-  if (!(await run(() => pack.classify(input)))) return { workflowId, status: "blocked", stages };
-  if (!(await run(() => pack.extract(input)))) return { workflowId, status: "blocked", stages };
+  const ordered: Array<[PipelineStage, () => Promise<StageResult>]> = [
+    ["security", () => pack.security(input)],
+    ["classification", () => pack.classify(input)],
+    ["extraction", () => pack.extract(input)],
+    ["provenance", () => pack.provenance(input, stages)],
+    ["deadline", () => pack.deadlines(input, stages)],
+    ["contradiction", () => pack.contradictions(input, stages)],
+    ["findings", () => pack.findings(input, stages)],
+    ["discrepancy", () => pack.discrepancies(input, stages)],
+    ["evidence", () => pack.evidence(input, stages)],
+    ["research", () => pack.research(input, stages)],
+    ["risk", () => pack.risk(input, stages)],
+    ["strategy", () => pack.strategy(input, stages)],
+    ["draft", () => pack.draft(input, stages)],
+    ["draftProvenance", () => pack.draftProvenance(input, stages)],
+    ["validation", () => pack.validation(input, stages)],
+  ];
 
-  for (const fn of [
-    pack.provenance, pack.deadlines, pack.contradictions, pack.findings,
-    pack.discrepancies, pack.evidence, pack.research, pack.strategy,
-    pack.draft, pack.draftProvenance, pack.validation,
-  ]) {
-    if (!(await run(() => fn(input, stages)))) return { workflowId, status: "blocked", stages };
+  for (const [stage, fn] of ordered) {
+    if (!(await run(stage, fn))) return { workflowId, status: "blocked", stages };
   }
 
   const validation = stages.find((s) => s.stage === "validation");
@@ -99,21 +130,34 @@ export async function runGoldStandardPipeline(
     stage: "blockingGate",
     status: validation?.status === "passed" ? "passed" : "blocked",
     messages: validation?.status === "passed"
-      ? ["Validation passed; workflow may enter human review."]
-      : ["Validation did not pass; approval and mailing are blocked."],
+      ? ["All pre-review validation passed; consequential stages may proceed only through their explicit gates."]
+      : ["Validation did not pass; review, approval, mailing, tracking, and proof certification are blocked."],
   };
   stages.push(blockingGate);
+  if (blockingGate.status !== "passed") return { workflowId, status: "blocked", stages };
 
-  return {
-    workflowId,
-    status: blockingGate.status === "passed" ? "ready_for_review" : "blocked",
-    stages,
-  };
+  const consequential: Array<[PipelineStage, () => Promise<StageResult>]> = [
+    ["review", () => pack.review(input, stages)],
+    ["approval", () => pack.approval(input, stages)],
+    ["mailing", () => pack.mailing(input, stages)],
+    ["tracking", () => pack.tracking(input, stages)],
+    ["proofAudit", () => pack.proofAudit(input, stages)],
+  ];
+
+  for (const [stage, fn] of consequential) {
+    if (!(await run(stage, fn))) return { workflowId, status: "blocked", stages };
+  }
+
+  return { workflowId, status: "completed", stages };
 }
 
 export function isGoldStandardPipeline(result: PipelineResult): boolean {
-  return requiredStages.every((stage) => {
+  return GOLD_STANDARD_PIPELINE_STAGES.every((stage) => {
     const found = result.stages.find((candidate) => candidate.stage === stage);
     return found?.status === "passed";
   });
+}
+
+export function hasCompleteIntelligence(result: PipelineResult): boolean {
+  return intelligenceStages.every((stage) => result.stages.some((candidate) => candidate.stage === stage && candidate.status === "passed"));
 }
