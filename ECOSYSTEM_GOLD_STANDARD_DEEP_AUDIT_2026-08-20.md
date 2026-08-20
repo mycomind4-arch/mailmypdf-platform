@@ -59,13 +59,31 @@ Status: **fixed code-side**. Approval and submission now require an injected aut
 
 Dispute Mail's Credit Report workflow previously advanced from `Pay and send` directly to a `submitted` screen without Stripe payment or a fulfillment API call.
 
-Status: **fixed**. Checkout now fails closed and explicitly reports that live payment/fulfillment is not installed.
+Status: **fixed**. Checkout now fails closed and explicitly reports that live payment/fulfillment is not installed; the current route remains preparation-only and reports `Not submitted`.
 
 ### P0 — UI-created mailing order falsely treated as submission
 
 Immigration Mail's response workflow created a Supabase `mailing_orders` row with status `draft`, then immediately displayed `Your letter has been submitted`. No Stripe charge or carrier/MailMyPDF submission occurred in that path.
 
 Status: **fixed code-side**. The current mailing helper now fails closed with `fulfillment_not_configured` rather than allowing the UI to reach its success screen through a draft-only record. A real payment/provider boundary is still required.
+
+### P0 — ambiguous provider state mapped to success
+
+Appeal Mail's MailMyPDF adapter previously mapped unknown provider communication statuses to `submitted`, allowing an unrecognized upstream state to masquerade as a valid mailing state.
+
+Status: **fixed**. Unknown statuses now throw; missing provider communication IDs and empty status lookup IDs also fail closed. Direct regression coverage was added for status mapping.
+
+### P0 — unproven payment before mailing readiness
+
+Appeal Mail's Stripe checkout function previously accepted an appeal ID and recipient information without loading the owner-scoped appeal or enforcing the canonical readiness gate.
+
+Status: **fixed**. Checkout now loads the owner-scoped appeal, verifies the workflow ID, and requires `isReadyToMail()` before Stripe session creation.
+
+### P0 — provider acceptance conflated with proof-complete mailing
+
+Small Business's durable executor previously emitted `mailing.sent` immediately after provider acceptance even when tracking/proof data was absent.
+
+Status: **fixed**. The executor now emits `mailing.accepted`, emits `mailing.proof_pending` when tracking or proof is incomplete, and emits `mailing.sent` only when both are present.
 
 ### P1 — capability metadata versus implementation
 
@@ -97,26 +115,38 @@ Small Business's MailMyPDF client previously accepted arbitrary JSON as a succes
 
 Status: **fixed**. Provider execution responses are schema-validated, must contain a non-empty lifecycle status, and must reference the same mail job that was submitted. Regression tests cover malformed and cross-job responses.
 
+### P1 — benefits evidence status without provenance
+
+Benefits Appeal previously allowed a `supported`/`draft_ready` issue to pass the drafting gate without any evidence ID.
+
+Status: **fixed**. Drafting now requires non-empty evidence provenance for every non-excluded supported issue, with regression coverage.
+
+### P1 — permit evidence/authority status without provenance
+
+Permit Response previously treated `evidence_found`/`response_ready` as sufficient without requiring actual evidence IDs, and validation did not require authoritative source IDs.
+
+Status: **fixed**. Drafting requires evidence provenance; validation requires authoritative provenance for non-excluded requirements, with regression coverage.
+
 ## Repository audit matrix
 
 | Repo | Strongest state | Key evidence | Main blockers |
 |---|---|---|---|
 | `mailmypdf-platform` | executable foundation | canonical pipeline, domain-pack contract, certification ledger, CI config | sibling-runtime integration and networked verification |
-| `mailmypdf` | shared production platform | payment/fulfillment/security hardening, retention, rate limiting, private PDFs | operational secrets, cron, alerting, bot protection, E2E provider verification |
-| `notice-respond` | domain-ready | mature CP14/CP2000 stack, strict sequential runtime gate, explicit approval, regression suite | explicit CP2000 approval UI, missing `/api/mail/response` route, deployed provider/path certification |
-| `appeal-mail` | domain-ready | pack-backed factory, quality gates, capability regressions, runtime-aware customer status | factory/runtime pack registration, deployed submission/tracking/proof |
+| `mailmypdf` | shared production platform | payment/fulfillment/security hardening, retention, rate limiting, private PDFs | operational secrets, cron, alerting, bot protection, E2E provider verification; old audit recorded 492/496 tests passing with 4 vertical-registry failures |
+| `notice-respond` | domain-ready | mature CP14/CP2000 stack, strict sequential runtime gate, explicit approval, extraction gate, regression suite | explicit CP2000 approval UI, missing `/api/mail/response` route, deployed provider/path certification |
+| `appeal-mail` | domain-ready | pack-backed factory, quality gates, owner-scoped checkout readiness, provider fail-closed status mapping, regression tests | factory/runtime pack registration, deployed submission/tracking/proof |
 | `dispute-mail` credit-report | domain-ready | deterministic analysis, evidence/finding gates, false-submit UI removed | actual runtime wiring, Stripe/fulfillment, tracking/proof |
 | `dispute-mail` other workflows | catalog | explicit partial state | domain packs/analysis |
 | `immigration-mail` | domain-ready | document understanding, preflight, validation/review/approval, false-success guard | actual payment/provider path, deployed fulfillment/tracking/proof |
-| `mailmypdf-smallbusiness` | domain-ready | Trigger.dev durable task, approval ordering, evidence-bearing Gold runner, provider response validation | runner not wired into executor, persistence, scheduling auth, fulfillment, tracking, proof, team permissions |
+| `mailmypdf-smallbusiness` | domain-ready | Trigger.dev durable task, approval ordering, evidence-bearing Gold runner, provider response validation, acceptance/proof separation, accountable approval actors | runner not wired into executor, persistence, scheduling auth, fulfillment, tracking, proof, team permissions |
 | `gov-reply` | domain-ready | source-grounded AI worker, evidence-bearing Gold runner | runner not wired into executor, persistence, fulfillment, tracking/proof |
 | `code-enforcement` | domain-ready | evidence-bearing lifecycle runner/tests | runner not wired into executor, property/jurisdiction runtime, fulfillment |
 | `records-requests` | executable | D1 repo, DB constraints, server-side attested PDF, idempotent provider boundary, fail-closed approval/submission identity, HMAC callback | D1 provisioning, real auth resolver, live provider, deployed E2E |
-| `permit-response` | domain-ready | permit-specific contract/tests | Code Enforcement/shared runtime boundary |
-| `benefits-appeal` | domain-ready | benefits-specific contract/tests | Appeal Mail/FairProcess runtime boundary |
+| `permit-response` | domain-ready | permit-specific contract/tests, evidence provenance gate, authority-source gate | Code Enforcement/shared runtime boundary |
+| `benefits-appeal` | domain-ready | benefits-specific contract/tests, evidence provenance gate | Appeal Mail/FairProcess runtime boundary |
 | `debt-defense` | catalog | explicit execution decision | reuse must first be proven inside Dispute Mail |
 | `tenant-reply` | catalog | explicit execution decision | shared runtime not connected |
-| `insurance-claims` | catalog | planned UI/workflow directory | shared intelligence/runtime not connected |
+| `insurance-claims` | catalog | explicit execution decision | shared intelligence/runtime not connected |
 
 ## Gold Standard priority order for the day
 
@@ -167,7 +197,10 @@ Every Gold runner should have regression coverage proving:
 12. the production executor actually invokes the certified Gold runner;
 13. a database draft/order record cannot be presented as physical mailing submission;
 14. provider responses are schema-validated and correlated to the requested job/case;
-15. customer-facing “executable” labels are backed by real runtime capability registration.
+15. customer-facing “executable” labels are backed by real runtime capability registration;
+16. unknown provider states fail closed rather than being mapped to success;
+17. approval/payment creation cannot occur before readiness validation;
+18. accountable actor identity is present for consequential approvals/rejections.
 
 ## External-agent handoff
 
