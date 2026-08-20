@@ -121,8 +121,14 @@ export async function runGoldStandardPipeline(
     ["validation", () => pack.validation(input, stages)],
   ];
 
+  // Run intelligence stages sequentially. Stop on first failure, but always
+  // add the blockingGate so consumers can see why consequential stages are blocked.
+  let intelligenceOk = true;
   for (const [stage, fn] of ordered) {
-    if (!(await run(stage, fn))) return { workflowId, status: "blocked", stages };
+    if (!(await run(stage, fn))) {
+      intelligenceOk = false;
+      break;
+    }
   }
 
   const validation = stages.find((s) => s.stage === "validation");
@@ -134,7 +140,10 @@ export async function runGoldStandardPipeline(
       : ["Validation did not pass; review, approval, mailing, tracking, and proof certification are blocked."],
   };
   stages.push(blockingGate);
-  if (blockingGate.status !== "passed") return { workflowId, status: "blocked", stages };
+
+  if (!intelligenceOk || blockingGate.status !== "passed") {
+    return { workflowId, status: "blocked", stages };
+  }
 
   const consequential: Array<[PipelineStage, () => Promise<StageResult>]> = [
     ["review", () => pack.review(input, stages)],

@@ -15,11 +15,19 @@ importers:
         specifier: ^5.8.3
         version: 5.9.3
 
+  apps/platform-ui: {}
+
   packages/agent-runtime:
     dependencies:
       '@mailmypdf/core':
         specifier: workspace:*
         version: link:../core
+      '@mailmypdf/documents':
+        specifier: workspace:*
+        version: link:../documents
+      '@mailmypdf/intelligence':
+        specifier: workspace:*
+        version: link:../intelligence
 
   packages/ai:
     dependencies:
@@ -105,6 +113,8 @@ importers:
       '@pipecat-ai/client-js':
         specifier: '>=1.13.0 <2'
         version: 1.13.0
+
+  packages/workflows: {}
 
 packages:
 

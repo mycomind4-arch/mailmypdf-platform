@@ -11,6 +11,30 @@ import {
 
 const passed = (stage: string): StageResult => ({ stage: stage as any, status: "passed", messages: [] });
 
+/** Map from pipeline stage name to DomainPack method name. */
+const stageToMethod: Record<string, keyof DomainPack> = {
+  security: "security",
+  classification: "classify",
+  extraction: "extract",
+  provenance: "provenance",
+  deadline: "deadlines",
+  contradiction: "contradictions",
+  findings: "findings",
+  discrepancy: "discrepancies",
+  evidence: "evidence",
+  research: "research",
+  risk: "risk",
+  strategy: "strategy",
+  draft: "draft",
+  draftProvenance: "draftProvenance",
+  validation: "validation",
+  review: "review",
+  approval: "approval",
+  mailing: "mailing",
+  tracking: "tracking",
+  proofAudit: "proofAudit",
+};
+
 function makePack(): DomainPack {
   const pack: Record<string, any> = {
     id: "fixture",
@@ -18,8 +42,12 @@ function makePack(): DomainPack {
     classify: async () => passed("classification"),
     extract: async () => passed("extraction"),
   };
-  for (const stage of GOLD_STANDARD_PIPELINE_STAGES.filter((stage) => !["security", "classification", "extraction", "blockingGate"].includes(stage))) {
-    pack[stage] = async () => passed(stage);
+  for (const stage of GOLD_STANDARD_PIPELINE_STAGES) {
+    if (stage === "blockingGate") continue;
+    const method = stageToMethod[stage];
+    if (method && !pack[method]) {
+      pack[method] = async () => passed(stage);
+    }
   }
   return pack as DomainPack;
 }
@@ -49,8 +77,12 @@ describe("gold-standard pipeline", () => {
     pack.extract = async () => passed("classification");
     const result = await runGoldStandardPipeline("fixture", pack, { documents: [] });
     assert.equal(result.status, "blocked");
-    assert.equal(result.stages.at(-1)?.stage, "extraction");
-    assert.equal(result.stages.at(-1)?.status, "failed");
+    // The extraction stage should be recorded as failed due to stage mismatch
+    const extraction = result.stages.find((s) => s.stage === "extraction");
+    assert.equal(extraction?.status, "failed");
+    // The blockingGate should be present and blocked (validation never ran)
+    const gate = result.stages.find((s) => s.stage === "blockingGate");
+    assert.equal(gate?.status, "blocked");
   });
 
   test("blocks when approval fails", async () => {

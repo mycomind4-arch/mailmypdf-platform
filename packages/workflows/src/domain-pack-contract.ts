@@ -1,4 +1,4 @@
-import type { DomainPack, PipelineStage } from "./gold-standard-pipeline";
+import type { DomainPack, PipelineStage } from "./gold-standard-pipeline.js";
 
 export type DomainCapability =
   | "classification"

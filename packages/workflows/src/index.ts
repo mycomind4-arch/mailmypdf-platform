@@ -1,3 +1,3 @@
-export * from "./gold-standard-pipeline";
-export * from "./domain-pack-contract";
-export * from "./ecosystem-certification";
+export * from "./gold-standard-pipeline.js";
+export * from "./domain-pack-contract.js";
+export * from "./ecosystem-certification.js";
