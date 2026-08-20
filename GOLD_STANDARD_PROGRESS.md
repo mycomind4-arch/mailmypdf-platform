@@ -8,7 +8,7 @@ The ecosystem target remains genuine executable Gold Standard for every workflow
 |---|---|---|
 | 1. Contract + complete workflow inventory | ADVANCED | Canonical program and status model established; vertical inventory remains tracked across the MailMyPDF family. |
 | 2. Notice Respond reference certification | ADVANCED | Notice Respond remains the reference implementation; its connected-stage depth is the parity target. |
-| 3. Shared execution primitives | ADVANCED | Canonical pipeline runner now enforces intelligence, validation, blocking, review, approval, mailing, tracking, and proof-audit stages. |
+| 3. Shared execution primitives | ADVANCED | Canonical pipeline runner now enforces intelligence, validation, blocking, review, approval, mailing, tracking, and proof-audit stages. The runner is now also represented as the `@mailmypdf/workflows` workspace package. |
 | 4. Domain-pack SDK and adapter contracts | ADVANCED | Executable capability diagnostics reject declared-but-missing runtime methods and separate catalog metadata from runtime capability. |
 | 5. Appeal Mail | ADVANCED | Gold-standard gate, mailing readiness gate, and regression coverage are present; remaining work is full deployed-path certification. |
 | 6. Dispute Mail | ADVANCED | Credit-dispute analysis contract, fixtures, and explicit lifecycle gate are present; remaining work is full deployed-path certification. |
@@ -25,11 +25,14 @@ The ecosystem target remains genuine executable Gold Standard for every workflow
 - Approval and mailing remain explicit runtime stages; they cannot be inferred from a draft or schedule.
 - Tests must exercise representative fixtures and regression cases before a workflow can be certified.
 - A workflow is not Gold merely because its lifecycle runner exists; the actual production integrations and deployed path must still be verified.
+- CI/status checks for the newest platform commits are currently absent from the GitHub connector response, so no passing CI result is being claimed.
+- The workspace lockfile predates the new `packages/workflows` workspace package and has not been regenerated in this pass; installation/build certification remains pending until the lockfile is updated by a normal pnpm install in a networked environment.
 
 ## Next execution order
 
-1. Finish Records Requests regression certification and integration gates.
-2. Bring Permit Response, Benefits Appeal, Debt Defense, Tenant Reply, and Insurance Claims through the same executable lifecycle contract.
-3. Finish Small Business production persistence, authenticated scheduling, fulfillment authentication, carrier tracking, permanent proof, and team approval wiring.
-4. Finish deployed-path certification for GovReply, Code Enforcement, Appeal, Dispute, and Immigration.
-5. Run ecosystem-wide deployed smoke certification only after workflow-level gates are green.
+1. Regenerate and validate the workspace lockfile, then run the full platform package test/build matrix.
+2. Finish Records Requests regression certification and integration gates.
+3. Bring Permit Response, Benefits Appeal, Debt Defense, Tenant Reply, and Insurance Claims through the same executable lifecycle contract.
+4. Finish Small Business production persistence, authenticated scheduling, fulfillment authentication, carrier tracking, permanent proof, and team approval wiring.
+5. Finish deployed-path certification for GovReply, Code Enforcement, Appeal, Dispute, and Immigration.
+6. Run ecosystem-wide deployed smoke certification only after workflow-level gates are green.
