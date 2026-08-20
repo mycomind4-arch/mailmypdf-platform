@@ -127,18 +127,24 @@ Permit Response previously treated `evidence_found`/`response_ready` as sufficie
 
 Status: **fixed**. Drafting requires evidence provenance; validation requires authoritative provenance for non-excluded requirements, with regression coverage.
 
+### P1 — product lifecycle versus execution certification conflation
+
+The core `mailmypdf` vertical registry previously had only a product `status` field, while the ecosystem audit uses a separate Gold execution lifecycle. Several registry entries were `status: "live"` even though their dedicated vertical repositories were only catalog/domain-ready.
+
+Status: **fixed code-side**. `VerticalDefinition` now has an independent `executionState` with regression coverage for all ten canonical entries. Product lifecycle/navigation status and Gold execution certification can no longer be conflated.
+
 ## Repository audit matrix
 
 | Repo | Strongest state | Key evidence | Main blockers |
 |---|---|---|---|
 | `mailmypdf-platform` | executable foundation | canonical pipeline, domain-pack contract, certification ledger, CI config | sibling-runtime integration and networked verification |
-| `mailmypdf` | shared production platform | payment/fulfillment/security hardening, retention, rate limiting, private PDFs | operational secrets, cron, alerting, bot protection, E2E provider verification; old audit recorded 492/496 tests passing with 4 vertical-registry failures |
+| `mailmypdf` | shared production platform | payment/fulfillment/security hardening, retention, rate limiting, private PDFs; executionState now separates product lifecycle from Gold readiness | operational secrets, cron, alerting, bot protection, E2E provider verification; current registry verification needs a fresh full suite run |
 | `notice-respond` | domain-ready | mature CP14/CP2000 stack, strict sequential runtime gate, explicit approval, extraction gate, regression suite | explicit CP2000 approval UI, missing `/api/mail/response` route, deployed provider/path certification |
 | `appeal-mail` | domain-ready | pack-backed factory, quality gates, owner-scoped checkout readiness, provider fail-closed status mapping, regression tests | factory/runtime pack registration, deployed submission/tracking/proof |
 | `dispute-mail` credit-report | domain-ready | deterministic analysis, evidence/finding gates, false-submit UI removed | actual runtime wiring, Stripe/fulfillment, tracking/proof |
 | `dispute-mail` other workflows | catalog | explicit partial state | domain packs/analysis |
 | `immigration-mail` | domain-ready | document understanding, preflight, validation/review/approval, false-success guard | actual payment/provider path, deployed fulfillment/tracking/proof |
-| `mailmypdf-smallbusiness` | domain-ready | Trigger.dev durable task, approval ordering, evidence-bearing Gold runner, provider response validation, acceptance/proof separation, accountable approval actors | runner not wired into executor, persistence, scheduling auth, fulfillment, tracking, proof, team permissions |
+| `mailmypdf-smallbusiness` | domain-ready | Trigger.dev durable task, approval ordering, evidence-bearing Gold runner, provider response validation, acceptance/proof separation, accountable approval actors, signed webhook contract | runner not wired into executor certification, persistence, scheduling auth, fulfillment, tracking, proof, team permissions |
 | `gov-reply` | domain-ready | source-grounded AI worker, evidence-bearing Gold runner | runner not wired into executor, persistence, fulfillment, tracking/proof |
 | `code-enforcement` | domain-ready | evidence-bearing lifecycle runner/tests | runner not wired into executor, property/jurisdiction runtime, fulfillment |
 | `records-requests` | executable | D1 repo, DB constraints, server-side attested PDF, idempotent provider boundary, fail-closed approval/submission identity, HMAC callback | D1 provisioning, real auth resolver, live provider, deployed E2E |
@@ -200,7 +206,8 @@ Every Gold runner should have regression coverage proving:
 15. customer-facing “executable” labels are backed by real runtime capability registration;
 16. unknown provider states fail closed rather than being mapped to success;
 17. approval/payment creation cannot occur before readiness validation;
-18. accountable actor identity is present for consequential approvals/rejections.
+18. accountable actor identity is present for consequential approvals/rejections;
+19. product lifecycle status cannot imply Gold execution readiness.
 
 ## External-agent handoff
 
