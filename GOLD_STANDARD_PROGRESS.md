@@ -8,13 +8,13 @@ The ecosystem target remains genuine executable Gold Standard for every workflow
 |---|---|---|
 | 1. Contract + complete workflow inventory | ADVANCED | Canonical program and status model established; vertical inventory remains tracked across the MailMyPDF family. |
 | 2. Notice Respond reference certification | ADVANCED | Notice Respond remains the reference implementation; its connected-stage depth is the parity target. |
-| 3. Shared execution primitives | ADVANCED | Canonical pipeline runner now enforces intelligence, validation, blocking, review, approval, mailing, tracking, and proof-audit stages. The runner is now also represented as the `@mailmypdf/workflows` workspace package. |
+| 3. Shared execution primitives | ADVANCED | Canonical pipeline runner enforces intelligence, validation, blocking, review, approval, mailing, tracking, and proof-audit stages and is represented as `@mailmypdf/workflows`. |
 | 4. Domain-pack SDK and adapter contracts | ADVANCED | Executable capability diagnostics reject declared-but-missing runtime methods and separate catalog metadata from runtime capability. |
 | 5. Appeal Mail | ADVANCED | Gold-standard gate, mailing readiness gate, and regression coverage are present; remaining work is full deployed-path certification. |
 | 6. Dispute Mail | ADVANCED | Credit-dispute analysis contract, fixtures, and explicit lifecycle gate are present; remaining work is full deployed-path certification. |
 | 7. Immigration Mail | ADVANCED | Document understanding now extracts action/deadline signals and missing facts/unverified deadlines block execution; remaining work is full deployed-path certification. |
-| 8. Small Business + government/administrative | ADVANCED | Small Business now has a strict executable lifecycle and capability-certification layer; GovReply and Code Enforcement have full lifecycle runners/tests; Records Requests has an executable lifecycle runner. Real persistence, fulfillment, tracking/proof, authorization, and deployed smoke certification remain explicit gaps. |
-| 9. Claims, benefits, debt, tenant, permit, records | IN PROGRESS | Records Requests has entered the executable lifecycle program; claims, benefits, debt, tenant, and permit still require the same treatment. |
+| 8. Small Business + government/administrative | ADVANCED | Small Business has a strict executable lifecycle/capability layer; GovReply and Code Enforcement have lifecycle runners/tests; Records Requests now has stricter executable lifecycle semantics and regression coverage. Real persistence, fulfillment, tracking/proof, authorization, and deployed smoke certification remain explicit gaps. |
+| 9. Claims, benefits, debt, tenant, permit, records | IN PROGRESS | Records Requests is the active executable build. Permit Response, Benefits Appeal, Debt Defense, Tenant Reply, and Insurance Claims now have explicit ownership/execution decisions and remain catalog-stage until their shared dependencies are proven reusable. |
 | 10. Ecosystem certification + deployed smoke tests | NOT STARTED | — |
 
 ## Current hard gates
@@ -31,8 +31,8 @@ The ecosystem target remains genuine executable Gold Standard for every workflow
 ## Next execution order
 
 1. Regenerate and validate the workspace lockfile, then run the full platform package test/build matrix.
-2. Finish Records Requests regression certification and integration gates.
-3. Bring Permit Response, Benefits Appeal, Debt Defense, Tenant Reply, and Insurance Claims through the same executable lifecycle contract.
+2. Finish Records Requests regression certification and real integration gates.
+3. Build the first of the dependent planned verticals only after its shared-owner boundary is proven.
 4. Finish Small Business production persistence, authenticated scheduling, fulfillment authentication, carrier tracking, permanent proof, and team approval wiring.
 5. Finish deployed-path certification for GovReply, Code Enforcement, Appeal, Dispute, and Immigration.
 6. Run ecosystem-wide deployed smoke certification only after workflow-level gates are green.
