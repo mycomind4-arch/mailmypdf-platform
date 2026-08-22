@@ -1,5 +1,6 @@
 export * from "./gold-standard-pipeline.js";
 export * from "./configured-pipeline.js";
+export * from "./domain-pack-builder.js";
 export * from "./domain-pack-composer.js";
 export * from "./domain-pack-contract.js";
 export * from "./ecosystem-certification.js";
