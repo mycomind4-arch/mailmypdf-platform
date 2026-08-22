@@ -12,5 +12,6 @@ export * from "./workflow-factory.js";
 export * from "./workflow-registry.js";
 export * from "./workflow-page-contract.js";
 export * from "./workflow-page-registry.js";
+export * from "./workflow-reserved-pages.js";
 export * from "./workflow-certifier.js";
 export * from "./reference-pipeline-profiles.js";
