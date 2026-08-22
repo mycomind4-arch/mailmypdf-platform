@@ -1,4 +1,5 @@
 export * from "./gold-standard-pipeline.js";
+export * from "./configured-pipeline.js";
 export * from "./domain-pack-contract.js";
 export * from "./ecosystem-certification.js";
 export * from "./pipeline-registry.js";
