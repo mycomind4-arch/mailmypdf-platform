@@ -283,7 +283,41 @@ Pattern:
 
 `Pipeline Archetype + Domain Adapter + Specialist Modules = Executable Workflow`
 
-## 10. Anti-Fragmentation Rules
+## 10. Workflow Authority Pages — LOCKED
+
+Every workflow gets one permanent public page under its product family. The page is both an authority hub and the entry point to execution.
+
+Every workflow page reserves these layers:
+
+1. Overview / intent match
+2. When to use it
+3. When not to use it
+4. Official rules, authorities, and source library
+5. Deadlines and timing
+6. Documents to gather
+7. Information to confirm
+8. Evidence checklist
+9. How the workflow works
+10. Issues and requirements checked
+11. Common mistakes and failure modes
+12. Representative scenarios
+13. Practical checklists
+14. Templates and tools
+15. Workflow-specific FAQ
+16. Glossary
+17. Related workflows
+18. Execution CTA
+19. Mailing, tracking, and proof
+20. Source freshness / last reviewed
+
+Authority pages must use current source verification for legal, tax, medical, regulatory, court, immigration, financial-aid, or other high-stakes claims. No page may invent authorities, deadlines, eligibility rules, recipients, or outcomes.
+
+A workflow page has its own maturity state separate from workflow execution:
+`placeholder → authority-draft → source-verified → workflow-wired → gold → production-verified`.
+
+Prelaunch indexing stays disabled even when authority pages and workflow routes exist. Placeholder pages must never imply unfinished execution.
+
+## 11. Anti-Fragmentation Rules
 
 Agents and maintainers MUST NOT:
 - create another global navigation model,
@@ -295,12 +329,13 @@ Agents and maintainers MUST NOT:
 - duplicate platform engines inside verticals,
 - mark a placeholder executable,
 - claim mailing success without real provider state,
-- silently change stable public route structures.
+- silently change stable public route structures,
+- create a workflow page without the authority-page contract.
 
 Any proposed exception must be documented in `mailmypdf-platform` before implementation.
 
-## 11. Definition of Done
+## 12. Definition of Done
 
-A workflow may be labeled **Gold Standard / Executable** only after its pipeline, domain adapter, dependencies, security/authorization, tests, mailing/tracking/proof path, and deployed verification all pass.
+A workflow may be labeled **Gold Standard / Executable** only after its pipeline, domain adapter, dependencies, security/authorization, tests, mailing/tracking/proof path, authority page source grounding, and deployed verification all pass.
 
 This contract is locked so future agents inherit the architecture instead of redesigning it.
