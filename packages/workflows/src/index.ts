@@ -8,3 +8,4 @@ export * from "./workflow-manifest.js";
 export * from "./workflow-factory.js";
 export * from "./workflow-registry.js";
 export * from "./workflow-page-contract.js";
+export * from "./workflow-page-registry.js";
