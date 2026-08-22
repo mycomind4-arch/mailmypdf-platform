@@ -44,7 +44,7 @@ test("valid manifest composes", () => {
 });
 
 test("factory rejects incompatible adapter pairing", () => {
-  const result = composeWorkflow(base({ adapters: ["tax"], requiredCapabilities: base().requiredCapabilities }));
+  const result = composeWorkflow(base({ adapters: ["insurance"] }));
   assert.equal(result.executable, false);
   assert.ok(result.diagnostics.some((d) => d.code === "INCOMPATIBLE_ADAPTER"));
 });
