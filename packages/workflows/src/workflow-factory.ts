@@ -1,5 +1,6 @@
 import { getAdapter, type AdapterId } from "./adapter-registry.js";
-import { getPipeline, type PipelineId } from "./pipeline-registry.js";
+import { invalidAdapterPairings } from "./pipeline-adapter-matrix.js";
+import { getPipeline } from "./pipeline-registry.js";
 import { type WorkflowCapability, type WorkflowManifest, validateManifestShape } from "./workflow-manifest.js";
 
 export type FactoryDiagnosticSeverity = "error" | "warning";
@@ -61,6 +62,10 @@ export function composeWorkflow(manifest: WorkflowManifest): WorkflowFactoryResu
     } catch (error) {
       diagnostics.push({ severity: "error", code: "UNKNOWN_ADAPTER", message: error instanceof Error ? error.message : String(error) });
     }
+  }
+
+  for (const adapterId of invalidAdapterPairings(manifest.pipeline, manifest.adapters)) {
+    diagnostics.push({ severity: "error", code: "INCOMPATIBLE_ADAPTER", message: `Adapter ${adapterId} is not an approved pairing for ${manifest.pipeline}.` });
   }
 
   const declared = new Set([...manifest.requiredCapabilities, ...manifest.optionalCapabilities, ...manifest.notApplicableCapabilities]);
