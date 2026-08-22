@@ -1,5 +1,4 @@
-import { MASTER_PUBLIC_ROUTES } from "../gateway/master-public-routes.js";
-import { WORKFLOW_AUTHORITY_PAGES } from "../workflows/src/workflow-page-registry.js";
+import { WORKFLOW_AUTHORITY_PAGES } from "@mailmypdf/workflows";
 
 export type SitemapEntry = {
   loc: string;
@@ -13,17 +12,27 @@ export type SitemapOptions = {
   launchReady?: boolean;
 };
 
+const CORE_PUBLIC_ROUTES = [
+  { path: "/", priority: 1 },
+  { path: "/send", priority: 0.9 },
+  { path: "/write", priority: 0.9 },
+  { path: "/pricing", priority: 0.7 },
+  { path: "/ecosystem", priority: 0.9 },
+  { path: "/how-it-works", priority: 0.8 },
+  { path: "/resources", priority: 0.7 },
+  { path: "/templates", priority: 0.7 },
+  { path: "/proof-of-service", priority: 0.7 },
+] as const;
+
 export function buildEcosystemSitemap(options: SitemapOptions = {}): readonly SitemapEntry[] {
   const origin = (options.canonicalOrigin ?? "https://mailmypdf.ai").replace(/\/$/, "");
   const indexable = options.launchReady === true;
-  const core = MASTER_PUBLIC_ROUTES
-    .filter((route) => route.kind === "core" || route.kind === "product" || route.kind === "resource")
-    .map((route): SitemapEntry => ({
-      loc: `${origin}${route.path}`,
-      changefreq: route.kind === "resource" ? "weekly" : "monthly",
-      priority: route.path === "/" ? 1 : route.kind === "product" ? 0.9 : 0.7,
-      indexable,
-    }));
+  const core = CORE_PUBLIC_ROUTES.map((route): SitemapEntry => ({
+    loc: `${origin}${route.path}`,
+    changefreq: route.path === "/resources" || route.path === "/templates" ? "weekly" : "monthly",
+    priority: route.priority,
+    indexable,
+  }));
 
   const workflows = WORKFLOW_AUTHORITY_PAGES.map((page): SitemapEntry => ({
     loc: `${origin}${page.canonicalPath}`,
