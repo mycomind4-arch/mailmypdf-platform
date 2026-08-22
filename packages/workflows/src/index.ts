@@ -4,6 +4,7 @@ export * from "./ecosystem-certification.js";
 export * from "./pipeline-registry.js";
 export * from "./adapter-registry.js";
 export * from "./pipeline-adapter-matrix.js";
+export * from "./capability-registry.js";
 export * from "./workflow-manifest.js";
 export * from "./workflow-factory.js";
 export * from "./workflow-registry.js";
