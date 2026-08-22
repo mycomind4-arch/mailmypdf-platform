@@ -1,4 +1,4 @@
-import { WORKFLOW_AUTHORITY_PAGES } from "@mailmypdf/workflows";
+import { RESERVED_WORKFLOW_AUTHORITY_PAGES, WORKFLOW_AUTHORITY_PAGES } from "@mailmypdf/workflows";
 
 export type SitemapEntry = {
   loc: string;
@@ -34,10 +34,10 @@ export function buildEcosystemSitemap(options: SitemapOptions = {}): readonly Si
     indexable,
   }));
 
-  const workflows = WORKFLOW_AUTHORITY_PAGES.map((page): SitemapEntry => ({
+  const workflows = [...WORKFLOW_AUTHORITY_PAGES, ...RESERVED_WORKFLOW_AUTHORITY_PAGES].map((page): SitemapEntry => ({
     loc: `${origin}${page.canonicalPath}`,
     changefreq: "monthly",
-    priority: 0.8,
+    priority: page.maturity === "placeholder" ? 0.7 : 0.8,
     indexable,
   }));
 
