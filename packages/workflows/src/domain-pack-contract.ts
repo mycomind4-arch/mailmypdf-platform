@@ -3,8 +3,14 @@ import type { DomainPack, PipelineStage } from "./gold-standard-pipeline.js";
 export type DomainCapability =
   | "classification"
   | "extraction"
+  | "understand"
+  | "facts"
+  | "provenance"
+  | "timeline"
   | "deadlines"
+  | "requirements"
   | "findings"
+  | "contradictions"
   | "discrepancies"
   | "evidence"
   | "research"
@@ -12,7 +18,7 @@ export type DomainCapability =
   | "strategy"
   | "draft"
   | "validation"
-  | "review"
+  | "humanReview"
   | "approval"
   | "mailing"
   | "tracking"
@@ -27,8 +33,14 @@ export type DomainPackManifest = {
 const capabilityToMethod: Record<DomainCapability, keyof DomainPack> = {
   classification: "classify",
   extraction: "extract",
+  understand: "understand",
+  facts: "facts",
+  provenance: "provenance",
+  timeline: "timeline",
   deadlines: "deadlines",
+  requirements: "requirements",
   findings: "findings",
+  contradictions: "contradictions",
   discrepancies: "discrepancies",
   evidence: "evidence",
   research: "research",
@@ -36,7 +48,7 @@ const capabilityToMethod: Record<DomainCapability, keyof DomainPack> = {
   strategy: "strategy",
   draft: "draft",
   validation: "validation",
-  review: "review",
+  humanReview: "review",
   approval: "approval",
   mailing: "mailing",
   tracking: "tracking",
@@ -52,11 +64,7 @@ export type DomainPackDiagnostic = {
 export function diagnoseDomainPack(pack: DomainPack, manifest: DomainPackManifest): DomainPackDiagnostic[] {
   return manifest.capabilities.map((capability) => {
     const method = capabilityToMethod[capability];
-    return {
-      capability,
-      method,
-      status: typeof pack[method] === "function" ? "executable" : "missing",
-    };
+    return { capability, method, status: typeof pack[method] === "function" ? "executable" : "missing" };
   });
 }
 
@@ -65,9 +73,7 @@ export function isExecutableDomainPack(pack: DomainPack, manifest: DomainPackMan
 }
 
 export function missingCapabilities(pack: DomainPack, manifest: DomainPackManifest): DomainCapability[] {
-  return diagnoseDomainPack(pack, manifest)
-    .filter((diagnostic) => diagnostic.status === "missing")
-    .map((diagnostic) => diagnostic.capability);
+  return diagnoseDomainPack(pack, manifest).filter((diagnostic) => diagnostic.status === "missing").map((diagnostic) => diagnostic.capability);
 }
 
 export function isConsequentialStage(stage: PipelineStage): boolean {
