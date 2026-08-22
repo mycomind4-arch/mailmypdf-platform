@@ -2,16 +2,19 @@
  * Canonical Gold Standard workflow runner.
  *
  * Domain packs own domain intelligence. The runner owns lifecycle semantics,
- * stage ordering, and consequential-action gates. Missing capability is never
- * silently treated as success.
+ * stage ordering, and consequential-action gates.
  */
 
 export type PipelineStage =
   | "security"
   | "classification"
   | "extraction"
+  | "understand"
+  | "facts"
   | "provenance"
+  | "timeline"
   | "deadline"
+  | "requirements"
   | "contradiction"
   | "findings"
   | "discrepancy"
@@ -48,8 +51,12 @@ export interface DomainPack {
   security(input: GoldStandardInput): Promise<StageResult>;
   classify(input: GoldStandardInput): Promise<StageResult>;
   extract(input: GoldStandardInput): Promise<StageResult>;
+  understand(input: GoldStandardInput, prior: readonly StageResult[]): Promise<StageResult>;
+  facts(input: GoldStandardInput, prior: readonly StageResult[]): Promise<StageResult>;
   provenance(input: GoldStandardInput, prior: readonly StageResult[]): Promise<StageResult>;
+  timeline(input: GoldStandardInput, prior: readonly StageResult[]): Promise<StageResult>;
   deadlines(input: GoldStandardInput, prior: readonly StageResult[]): Promise<StageResult>;
+  requirements(input: GoldStandardInput, prior: readonly StageResult[]): Promise<StageResult>;
   contradictions(input: GoldStandardInput, prior: readonly StageResult[]): Promise<StageResult>;
   findings(input: GoldStandardInput, prior: readonly StageResult[]): Promise<StageResult>;
   discrepancies(input: GoldStandardInput, prior: readonly StageResult[]): Promise<StageResult>;
@@ -74,13 +81,13 @@ export interface PipelineResult {
 }
 
 export const GOLD_STANDARD_PIPELINE_STAGES: readonly PipelineStage[] = [
-  "security", "classification", "extraction", "provenance", "deadline",
-  "contradiction", "findings", "discrepancy", "evidence", "research",
-  "risk", "strategy", "draft", "draftProvenance", "validation",
+  "security", "classification", "extraction", "understand", "facts", "provenance",
+  "timeline", "deadline", "requirements", "contradiction", "findings", "discrepancy",
+  "evidence", "research", "risk", "strategy", "draft", "draftProvenance", "validation",
   "blockingGate", "review", "approval", "mailing", "tracking", "proofAudit",
 ];
 
-const intelligenceStages: readonly PipelineStage[] = GOLD_STANDARD_PIPELINE_STAGES.slice(0, 15);
+const intelligenceStages: readonly PipelineStage[] = GOLD_STANDARD_PIPELINE_STAGES.slice(0, 19);
 
 export async function runGoldStandardPipeline(
   workflowId: string,
@@ -107,8 +114,12 @@ export async function runGoldStandardPipeline(
     ["security", () => pack.security(input)],
     ["classification", () => pack.classify(input)],
     ["extraction", () => pack.extract(input)],
+    ["understand", () => pack.understand(input, stages)],
+    ["facts", () => pack.facts(input, stages)],
     ["provenance", () => pack.provenance(input, stages)],
+    ["timeline", () => pack.timeline(input, stages)],
     ["deadline", () => pack.deadlines(input, stages)],
+    ["requirements", () => pack.requirements(input, stages)],
     ["contradiction", () => pack.contradictions(input, stages)],
     ["findings", () => pack.findings(input, stages)],
     ["discrepancy", () => pack.discrepancies(input, stages)],
@@ -121,8 +132,6 @@ export async function runGoldStandardPipeline(
     ["validation", () => pack.validation(input, stages)],
   ];
 
-  // Run intelligence stages sequentially. Stop on first failure, but always
-  // add the blockingGate so consumers can see why consequential stages are blocked.
   let intelligenceOk = true;
   for (const [stage, fn] of ordered) {
     if (!(await run(stage, fn))) {
@@ -161,10 +170,7 @@ export async function runGoldStandardPipeline(
 }
 
 export function isGoldStandardPipeline(result: PipelineResult): boolean {
-  return GOLD_STANDARD_PIPELINE_STAGES.every((stage) => {
-    const found = result.stages.find((candidate) => candidate.stage === stage);
-    return found?.status === "passed";
-  });
+  return GOLD_STANDARD_PIPELINE_STAGES.every((stage) => result.stages.find((candidate) => candidate.stage === stage)?.status === "passed");
 }
 
 export function hasCompleteIntelligence(result: PipelineResult): boolean {
