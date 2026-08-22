@@ -12,6 +12,7 @@
     "lint": "tsc --noEmit"
   },
   "dependencies": {
-    "@mailmypdf/core": "workspace:*"
+    "@mailmypdf/core": "workspace:*",
+    "@mailmypdf/workflows": "workspace:*"
   }
 }
