@@ -1,5 +1,5 @@
 {
-  "name": "@mailmypdf/payment-fulfillment",
+  "name": "@mailmypdf/mailing-client",
   "version": "0.1.0",
   "private": false,
   "type": "module",
@@ -13,8 +13,5 @@
     "test": "node --test",
     "lint": "tsc --noEmit"
   },
-  "dependencies": {
-    "@mailmypdf/core": "workspace:*",
-    "@mailmypdf/mailing-client": "workspace:*"
-  }
+  "dependencies": {}
 }
