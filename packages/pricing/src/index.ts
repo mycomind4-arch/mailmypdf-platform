@@ -625,9 +625,9 @@ const proposedProfiles: WorkflowPricingProfile[] = [
 // ── Immigration Mail (extended) ─────────────────────────────────────────────
 
 const immigrationExtendedProfiles: WorkflowPricingProfile[] = [
-  profile("rfe", "immigration-mail", "ADVANCED", 5999, {
+  profile("rfe", "immigration-mail", "ADVANCED", 7999, {
     includedMail: "standard",
-    pricingRationale: "RFE response — evidence analysis, authority mapping, deadline extraction, draft preparation",
+    pricingRationale: "RFE response — evidence analysis, authority mapping, deadline extraction, draft preparation. Attorney equivalent $700-$2000.",
     commercialStatus: "production",
   }),
   profile("noid", "immigration-mail", "HIGH_STAKES", 9999, {
@@ -644,9 +644,10 @@ const immigrationExtendedProfiles: WorkflowPricingProfile[] = [
     pricingRationale: "I-751 joint filing/bona fide marriage evidence preparation",
     commercialStatus: "production",
   }),
-  profile("i601", "immigration-mail", "ADVANCED", 5999, {
+  profile("i601", "immigration-mail", "HIGH_STAKES", 9999, {
     includedMail: "standard",
-    pricingRationale: "I-601 waiver — complex extreme hardship analysis and legal argumentation",
+    includedPages: 12,
+    pricingRationale: "I-601 waiver — extreme hardship analysis, multi-pathway reasoning, qualifying relative analysis. Attorney equivalent $3000-$8000.",
     commercialStatus: "production",
   }),
   profile("i765", "immigration-mail", "ESSENTIAL", 1499, {
@@ -816,12 +817,12 @@ const insuranceClaimsProfiles: WorkflowPricingProfile[] = [
 // ── Benefits Appeal (vertical-specific workflows) ─────────────────────────────
 
 const benefitsAppealProfiles: WorkflowPricingProfile[] = [
-  profile("ssdi-reconsideration", "benefits-appeal", "STANDARD", 2999, {
-    pricingRationale: "SSDI reconsideration — updated evidence and factual response to denial",
+  profile("ssdi-reconsideration", "benefits-appeal", "STANDARD", 3999, {
+    pricingRationale: "SSDI reconsideration — medical-vocational analysis, updated evidence, factual response to denial",
     commercialStatus: "production",
   }),
-  profile("ssi-reconsideration", "benefits-appeal", "STANDARD", 2999, {
-    pricingRationale: "SSI reconsideration — updated financial/medical evidence response",
+  profile("ssi-reconsideration", "benefits-appeal", "STANDARD", 3999, {
+    pricingRationale: "SSI reconsideration — financial/medical evidence analysis, updated evidence response",
     commercialStatus: "production",
   }),
   profile("social-security-overpayment", "benefits-appeal", "ESSENTIAL", 1499, {
@@ -925,16 +926,16 @@ const privateOfficeProfiles: WorkflowPricingProfile[] = [
     pricingRationale: "Contractor dispute — contract analysis and evidence organization",
     commercialStatus: "production",
   }),
-  profile("property-insurance-claim", "mailmypdf-private-office", "STANDARD", 2999, {
-    pricingRationale: "Property insurance claim — damage documentation and claim preparation",
+  profile("property-insurance-claim", "mailmypdf-private-office", "STANDARD", 3999, {
+    pricingRationale: "Property insurance claim — damage documentation and claim preparation. Private Office premium workflow.",
     commercialStatus: "production",
   }),
-  profile("security-deposit-dispute", "mailmypdf-private-office", "STANDARD", 2999, {
-    pricingRationale: "Security deposit dispute — lease analysis and damage documentation",
+  profile("security-deposit-dispute", "mailmypdf-private-office", "STANDARD", 3999, {
+    pricingRationale: "Security deposit dispute — lease analysis and damage documentation. Private Office premium workflow.",
     commercialStatus: "production",
   }),
-  profile("trust-beneficiary-notice", "mailmypdf-private-office", "STANDARD", 2999, {
-    pricingRationale: "Trust beneficiary notice — trust analysis and notification preparation",
+  profile("trust-beneficiary-notice", "mailmypdf-private-office", "STANDARD", 3999, {
+    pricingRationale: "Trust beneficiary notice — trust analysis and notification preparation. Private Office premium workflow.",
     commercialStatus: "production",
   }),
 ];

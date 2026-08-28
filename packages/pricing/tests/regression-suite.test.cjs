@@ -3,7 +3,8 @@ const assert = require('node:assert');
 const {
   PRICES, LABELS, calculateQuote, getWorkflowPricingProfile,
   getProductionPricingProfiles, getPricingProfilesByVertical,
-  serializeQuote, BAND_RANGES, isValidPricingKey,
+  getAllPricingProfiles, serializeQuote, deserializeQuote,
+  BAND_RANGES, isValidPricingKey,
 } = require('../dist/index.js');
 
 const ALL_PRODUCTION = getProductionPricingProfiles();
@@ -371,6 +372,132 @@ describe('Ecosystem Checkout Migration', () => {
           assert.ok(extra.totalCents > base.totalCents, `${profile.workflowId}: extra pages should cost more`);
         }
       }
+    });
+  });
+});
+
+/* ─────────────────────────────────────────────
+   Pricing Quality Tests
+   Verify business invariants, not just technical
+   integration.
+   ───────────────────────────────────────────── */
+
+describe('Pricing Quality', () => {
+
+  describe('No duplicate workflow IDs', () => {
+    it('every production workflow ID is unique', () => {
+      const ids = WORKFLOW_PROFILES.map(p => p.workflowId);
+      const duplicates = ids.filter((id, i) => ids.indexOf(id) !== i);
+      assert.deepStrictEqual(duplicates, [], `Duplicate workflow IDs: ${duplicates.join(', ')}`);
+    });
+
+    it('every workflow ID across all profiles is unique', () => {
+      const all = getAllPricingProfiles();
+      const seen = new Set();
+      const ids = all.map(p => `${p.verticalId}/${p.workflowId}`);
+      const duplicates = ids.filter((id, i) => ids.indexOf(id) !== i);
+      assert.deepStrictEqual(duplicates, [], `Duplicate vertical/ID combos: ${duplicates.join(', ')}`);
+    });
+  });
+
+  describe('Band validation', () => {
+    it('every production profile price falls within its band range', () => {
+      const violations = [];
+      for (const p of WORKFLOW_PROFILES) {
+        const range = BAND_RANGES[p.band];
+        if (!range) { violations.push(`${p.workflowId}: unknown band ${p.band}`); continue; }
+        if (p.basePriceCents < range.min || p.basePriceCents > range.max) {
+          violations.push(`${p.workflowId}: \$${(p.basePriceCents/100).toFixed(2)} outside ${p.band} (\$${(range.min/100).toFixed(2)}-\$${(range.max/100).toFixed(2)})`);
+        }
+      }
+      assert.deepStrictEqual(violations, [], `Band violations:\n  ${violations.join('\n  ')}`);
+    });
+  });
+
+  describe('No negative or zero prices for paid workflows', () => {
+    it('no production profile has negative base price', () => {
+      const negative = WORKFLOW_PROFILES.filter(p => p.basePriceCents < 0);
+      assert.deepStrictEqual(negative, [], 'Negative base prices found');
+    });
+
+    it('all non-FREE production profiles have positive base price', () => {
+      const zeroPaid = WORKFLOW_PROFILES.filter(p => p.band !== 'FREE' && p.basePriceCents <= 0);
+      assert.deepStrictEqual(zeroPaid, [], `Paid workflows with zero price: ${zeroPaid.map(p => p.workflowId).join(', ')}`);
+    });
+  });
+
+  describe('Mailing price separation', () => {
+    it('mailing prices are distinct from workflow preparation prices', () => {
+      const workflowPrices = new Set(WORKFLOW_PROFILES.map(p => p.basePriceCents));
+      const mailingPrices = new Set(Object.values(PRICES));
+      // Mailing prices should not be the same as any non-FREE workflow price
+      const overlaps = [...mailingPrices].filter(cents => 
+        cents > 0 && workflowPrices.has(cents)
+      );
+      // $4.99 is an ESSENTIAL send-a-letter price AND the standard mailing price — that's OK
+      // since send-a-letter IS a mailing-only product
+      assert.ok(overlaps.length <= 1, `Mailing prices overlapping with workflow prices: ${overlaps.map(c => '$' + (c/100).toFixed(2)).join(', ')}`);
+    });
+
+    it('calculateQuote separates preparation from mailing', () => {
+      const profile = WORKFLOW_PROFILES.find(p => p.band === 'ADVANCED');
+      if (!profile) return;
+      const quote = calculateQuote({
+        workflowId: profile.workflowId,
+        verticalId: profile.verticalId,
+        actualPages: profile.includedPages,
+        mailClass: 'certified',
+      });
+      assert.ok(quote.basePriceCents > 0, 'Preparation fee should be positive for ADVANCED workflows');
+      assert.ok(quote.mailServiceCost >= 0, 'Mailing service cost should be non-negative');
+      assert.ok(quote.totalCents >= quote.basePriceCents, 'Total should be >= preparation fee');
+      assert.ok(quote.totalCents === quote.basePriceCents + quote.mailUpgradeCost,
+        'Total should equal base + mail upgrade');
+    });
+  });
+
+  describe('Price distribution sanity', () => {
+    it('not every workflow is the same price', () => {
+      const prices = WORKFLOW_PROFILES.map(p => p.basePriceCents);
+      const uniquePrices = new Set(prices);
+      assert.ok(uniquePrices.size >= 5, `Only ${uniquePrices.size} unique prices — catalog is too flat`);
+    });
+
+    it('FREE workflows are actually free', () => {
+      const free = WORKFLOW_PROFILES.filter(p => p.band === 'FREE');
+      for (const p of free) {
+        assert.strictEqual(p.basePriceCents, 0, `${p.workflowId} is FREE band but costs $${(p.basePriceCents/100).toFixed(2)}`);
+      }
+    });
+  });
+
+  describe('HIGH_STAKES validation', () => {
+    it('HIGH_STAKES workflows have the highest prices', () => {
+      const highStakes = WORKFLOW_PROFILES.filter(p => p.band === 'HIGH_STAKES');
+      const advanced = WORKFLOW_PROFILES.filter(p => p.band === 'ADVANCED');
+      const maxAdvanced = Math.max(...advanced.map(p => p.basePriceCents));
+      for (const p of highStakes) {
+        assert.ok(p.basePriceCents >= maxAdvanced,
+          `${p.workflowId} ($${(p.basePriceCents/100).toFixed(2)}) should be >= max ADVANCED ($${(maxAdvanced/100).toFixed(2)})`);
+      }
+    });
+  });
+
+  describe('Quote snapshot integrity', () => {
+    it('serialized quote round-trips correctly', () => {
+      const profile = WORKFLOW_PROFILES.find(p => p.band === 'ADVANCED');
+      if (!profile) return;
+      const quote = calculateQuote({
+        workflowId: profile.workflowId,
+        verticalId: profile.verticalId,
+        actualPages: profile.includedPages,
+        mailClass: 'certified',
+      });
+      const serialized = serializeQuote(quote);
+      const deserialized = deserializeQuote(serialized);
+      assert.ok(deserialized, 'Deserialized quote should not be null');
+      assert.strictEqual(deserialized.totalCents, quote.totalCents, 'Total should match after round-trip');
+      assert.strictEqual(deserialized.basePriceCents, quote.basePriceCents, 'Base should match after round-trip');
     });
   });
 });
