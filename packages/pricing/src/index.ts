@@ -610,9 +610,6 @@ const smallBusinessProfiles: WorkflowPricingProfile[] = [
 // ── Proposed (not yet production) ────────────────────────────────────────────
 
 const proposedProfiles: WorkflowPricingProfile[] = [
-  profile("records-request", "records-requests", "ESSENTIAL", 1299, { commercialStatus: "test", pricingRationale: "Records request — structured but simple" }),
-  profile("benefits-appeal", "benefits-appeal", "STANDARD", 2999, { commercialStatus: "test", pricingRationale: "Benefits appeal with agency-specific procedures" }),
-  profile("code-enforcement-notice", "code-enforcement", "STANDARD", 2499, { commercialStatus: "test", pricingRationale: "Code enforcement with compliance analysis" }),
   profile("govreply", "gov-reply", "ESSENTIAL", 1299, { commercialStatus: "disabled", pricingRationale: "Generic government reply — placeholder" }),
   profile("tenant-reply", "tenant-reply", "STANDARD", 2999, { commercialStatus: "disabled", pricingRationale: "Tenant reply with housing domain — placeholder" }),
   profile("permit-reply", "permit-response", "ESSENTIAL", 1299, { commercialStatus: "disabled", pricingRationale: "Permit response — placeholder" }),
@@ -622,12 +619,455 @@ const proposedProfiles: WorkflowPricingProfile[] = [
 // CATALOG REGISTRY
 // ═══════════════════════════════════════════════════════════════════════════
 
+
+// ── Immigration Mail (extended) ─────────────────────────────────────────────
+
+const immigrationExtendedProfiles: WorkflowPricingProfile[] = [
+  profile("rfe", "immigration-mail", "ADVANCED", 5999, {
+    includedMail: "standard",
+    pricingRationale: "RFE response — evidence analysis, authority mapping, deadline extraction, draft preparation",
+    commercialStatus: "production",
+  }),
+  profile("noid", "immigration-mail", "HIGH_STAKES", 9999, {
+    includedMail: "standard",
+    includedPages: 12,
+    pricingRationale: "NOID response — high-stakes immigration matter with complex legal analysis",
+    commercialStatus: "production",
+  }),
+  profile("i130", "immigration-mail", "STANDARD", 2999, {
+    pricingRationale: "I-130 petition response — structured workflow with evidentiary requirements",
+    commercialStatus: "production",
+  }),
+  profile("i751", "immigration-mail", "STANDARD", 2999, {
+    pricingRationale: "I-751 joint filing/bona fide marriage evidence preparation",
+    commercialStatus: "production",
+  }),
+  profile("i601", "immigration-mail", "ADVANCED", 5999, {
+    includedMail: "standard",
+    pricingRationale: "I-601 waiver — complex extreme hardship analysis and legal argumentation",
+    commercialStatus: "production",
+  }),
+  profile("i765", "immigration-mail", "ESSENTIAL", 1499, {
+    pricingRationale: "I-765 work authorization — straightforward application preparation",
+    commercialStatus: "production",
+  }),
+  profile("i131", "immigration-mail", "ESSENTIAL", 1499, {
+    pricingRationale: "I-131 travel document — straightforward application preparation",
+    commercialStatus: "production",
+  }),
+  profile("i90", "immigration-mail", "ESSENTIAL", 1299, {
+    pricingRationale: "I-90 green card replacement — simple application",
+    commercialStatus: "production",
+  }),
+  profile("foia", "immigration-mail", "ESSENTIAL", 1299, {
+    pricingRationale: "FOIA request — structured records request preparation",
+    commercialStatus: "production",
+  }),
+  profile("visa-refusal", "immigration-mail", "ADVANCED", 5999, {
+    includedMail: "standard",
+    pricingRationale: "Visa refusal response — consular processing analysis with legal argumentation",
+    commercialStatus: "production",
+  }),
+  profile("appeal", "immigration-mail", "ADVANCED", 5999, {
+    includedMail: "standard",
+    pricingRationale: "Immigration appeal — complex appellate briefing preparation",
+    commercialStatus: "production",
+  }),
+  profile("biometrics", "immigration-mail", "FREE", 0, {
+    pricingRationale: "Biometrics appointment letter — simple commodity workflow",
+    commercialStatus: "production",
+  }),
+  profile("case-inquiry", "immigration-mail", "ESSENTIAL", 1299, {
+    pricingRationale: "Case status inquiry — structured correspondence",
+    commercialStatus: "production",
+  }),
+  profile("consular", "immigration-mail", "ADVANCED", 5999, {
+    includedMail: "standard",
+    pricingRationale: "Consular processing — complex jurisdictional and procedural analysis",
+    commercialStatus: "production",
+  }),
+  profile("naturalization", "immigration-mail", "STANDARD", 2999, {
+    pricingRationale: "N-400 naturalization — structured eligibility analysis and preparation",
+    commercialStatus: "production",
+  }),
+  profile("denial", "immigration-mail", "ADVANCED", 5999, {
+    includedMail: "standard",
+    pricingRationale: "Immigration denial response — complex legal analysis and strategy",
+    commercialStatus: "production",
+  }),
+];
+
+// ── Insurance Claims ───────────────────────────────────────────────────────
+
+const insuranceClaimsProfiles: WorkflowPricingProfile[] = [
+  profile("new-claim", "insurance-claims", "STANDARD", 2999, {
+    pricingRationale: "New claim preparation — fact sheet, timeline, document checklist",
+    commercialStatus: "production",
+  }),
+  profile("homeowners-claim", "insurance-claims", "STANDARD", 2999, {
+    pricingRationale: "Homeowners claim — damage inventory, policy analysis, submission draft",
+    commercialStatus: "production",
+  }),
+  profile("auto-claim", "insurance-claims", "STANDARD", 2999, {
+    pricingRationale: "Auto claim — accident timeline, damage matrix, claim response",
+    commercialStatus: "production",
+  }),
+  profile("commercial-property-claim", "insurance-claims", "ADVANCED", 5999, {
+    includedMail: "standard",
+    pricingRationale: "Commercial property claim — complex loss inventory with business interruption",
+    commercialStatus: "production",
+  }),
+  profile("renters-insurance-claim", "insurance-claims", "ESSENTIAL", 1499, {
+    pricingRationale: "Renters claim — personal property inventory and loss documentation",
+    commercialStatus: "production",
+  }),
+  profile("denied-home-claim", "insurance-claims", "ADVANCED", 5999, {
+    includedMail: "standard",
+    pricingRationale: "Denied home claim — coverage analysis and evidence-based appeal",
+    commercialStatus: "production",
+  }),
+  profile("auto-claim-denial", "insurance-claims", "ADVANCED", 5999, {
+    includedMail: "standard",
+    pricingRationale: "Auto claim denial — liability and coverage analysis with dispute strategy",
+    commercialStatus: "production",
+  }),
+  profile("health-medical-denial", "insurance-claims", "ADVANCED", 6999, {
+    includedMail: "standard",
+    pricingRationale: "Health/medical denial — clinical documentation analysis and coverage argument",
+    commercialStatus: "production",
+  }),
+  profile("disability-claim-denial", "insurance-claims", "ADVANCED", 5999, {
+    includedMail: "standard",
+    pricingRationale: "Disability claim denial — medical evidence and coverage analysis",
+    commercialStatus: "production",
+  }),
+  profile("workers-comp-denial", "insurance-claims", "ADVANCED", 5999, {
+    includedMail: "standard",
+    pricingRationale: "Workers comp denial — injury analysis, coverage argument, and strategy",
+    commercialStatus: "production",
+  }),
+  profile("water-damage-claim", "insurance-claims", "STANDARD", 2999, {
+    pricingRationale: "Water damage claim — damage documentation and coverage analysis",
+    commercialStatus: "production",
+  }),
+  profile("roof-damage-claim", "insurance-claims", "STANDARD", 2999, {
+    pricingRationale: "Roof damage claim — damage assessment and coverage documentation",
+    commercialStatus: "production",
+  }),
+  profile("fire-smoke-claim", "insurance-claims", "STANDARD", 2999, {
+    pricingRationale: "Fire/smoke claim — damage inventory and loss documentation",
+    commercialStatus: "production",
+  }),
+  profile("property-damage-claim", "insurance-claims", "STANDARD", 2999, {
+    pricingRationale: "Property damage claim — damage documentation and claim preparation",
+    commercialStatus: "production",
+  }),
+  profile("hail-damage-claim", "insurance-claims", "STANDARD", 2999, {
+    pricingRationale: "Hail damage claim — damage assessment and coverage documentation",
+    commercialStatus: "production",
+  }),
+  profile("theft-vandalism-claim", "insurance-claims", "STANDARD", 2999, {
+    pricingRationale: "Theft/vandalism claim — loss inventory and police report documentation",
+    commercialStatus: "production",
+  }),
+  profile("mold-damage-claim", "insurance-claims", "STANDARD", 2999, {
+    pricingRationale: "Mold damage claim — damage analysis and coverage documentation",
+    commercialStatus: "production",
+  }),
+  profile("flood-damage-claim", "insurance-claims", "STANDARD", 2999, {
+    pricingRationale: "Flood damage claim — damage documentation and NFIP/private coverage analysis",
+    commercialStatus: "production",
+  }),
+  profile("underpaid-claim", "insurance-claims", "ADVANCED", 4999, {
+    pricingRationale: "Underpaid claim — estimate comparison and supplemental argument",
+    commercialStatus: "production",
+  }),
+  profile("claim-dispute", "insurance-claims", "ADVANCED", 4999, {
+    pricingRationale: "Claim dispute — multi-issue dispute with evidence and strategy",
+    commercialStatus: "production",
+  }),
+  profile("coverage-denial", "insurance-claims", "ADVANCED", 5999, {
+    includedMail: "standard",
+    pricingRationale: "Coverage denial — policy language analysis and coverage argumentation",
+    commercialStatus: "production",
+  }),
+  profile("insurance-appeal", "insurance-claims", "ADVANCED", 5999, {
+    includedMail: "standard",
+    pricingRationale: "Insurance appeal — full appeal with grounds, evidence, and argumentation",
+    commercialStatus: "production",
+  }),
+  profile("supplemental-claim", "insurance-claims", "STANDARD", 2999, {
+    pricingRationale: "Supplemental claim — additional damages documentation and estimate comparison",
+    commercialStatus: "production",
+  }),
+  profile("business-interruption-claim", "insurance-claims", "ADVANCED", 5999, {
+    includedMail: "standard",
+    pricingRationale: "Business interruption claim — financial loss analysis and coverage documentation",
+    commercialStatus: "production",
+  }),
+  profile("total-loss-claim", "insurance-claims", "ADVANCED", 4999, {
+    pricingRationale: "Total loss claim — valuation analysis and settlement negotiation preparation",
+    commercialStatus: "production",
+  }),
+];
+
+// ── Benefits Appeal (vertical-specific workflows) ─────────────────────────────
+
+const benefitsAppealProfiles: WorkflowPricingProfile[] = [
+  profile("ssdi-reconsideration", "benefits-appeal", "STANDARD", 2999, {
+    pricingRationale: "SSDI reconsideration — updated evidence and factual response to denial",
+    commercialStatus: "production",
+  }),
+  profile("ssi-reconsideration", "benefits-appeal", "STANDARD", 2999, {
+    pricingRationale: "SSI reconsideration — updated financial/medical evidence response",
+    commercialStatus: "production",
+  }),
+  profile("social-security-overpayment", "benefits-appeal", "ESSENTIAL", 1499, {
+    pricingRationale: "Overpayment response — amount verification and waiver/repayment preparation",
+    commercialStatus: "production",
+  }),
+  profile("ssdi-hearing", "benefits-appeal", "ADVANCED", 5999, {
+    includedMail: "standard",
+    pricingRationale: "SSDI hearing preparation — medical evidence organization and testimony preparation",
+    commercialStatus: "production",
+  }),
+  profile("ssi-hearing", "benefits-appeal", "ADVANCED", 5999, {
+    includedMail: "standard",
+    pricingRationale: "SSI hearing preparation — evidence organization and testimony preparation",
+    commercialStatus: "production",
+  }),
+  profile("unemployment-overpayment", "benefits-appeal", "ESSENTIAL", 1499, {
+    pricingRationale: "Unemployment overpayment — amount verification and response preparation",
+    commercialStatus: "production",
+  }),
+  profile("edd-appeal", "benefits-appeal", "STANDARD", 3999, {
+    pricingRationale: "EDD appeal — state-specific procedures and eligibility analysis",
+    commercialStatus: "production",
+  }),
+  profile("unemployment-reconsideration", "benefits-appeal", "STANDARD", 2999, {
+    pricingRationale: "Unemployment reconsideration — eligibility analysis and evidence response",
+    commercialStatus: "production",
+  }),
+  profile("unemployment-hearing", "benefits-appeal", "ADVANCED", 4999, {
+    pricingRationale: "Unemployment hearing — evidence organization and testimony preparation",
+    commercialStatus: "production",
+  }),
+  profile("medicaid-reduction", "benefits-appeal", "ESSENTIAL", 1499, {
+    pricingRationale: "Medicaid reduction — eligibility analysis and response preparation",
+    commercialStatus: "production",
+  }),
+  profile("medicaid-reconsideration", "benefits-appeal", "STANDARD", 2999, {
+    pricingRationale: "Medicaid reconsideration — updated evidence and eligibility argument",
+    commercialStatus: "production",
+  }),
+  profile("chip-denial", "benefits-appeal", "ESSENTIAL", 1499, {
+    pricingRationale: "CHIP denial — eligibility analysis and response preparation",
+    commercialStatus: "production",
+  }),
+  profile("medicare-denial", "benefits-appeal", "STANDARD", 2999, {
+    pricingRationale: "Medicare denial — coverage analysis and response preparation",
+    commercialStatus: "production",
+  }),
+  profile("food-stamp-denial", "benefits-appeal", "ESSENTIAL", 1499, {
+    pricingRationale: "Food stamp/SNAP denial — eligibility analysis and response",
+    commercialStatus: "production",
+  }),
+  profile("snap-reduction", "benefits-appeal", "ESSENTIAL", 1499, {
+    pricingRationale: "SNAP reduction — eligibility analysis and appeal preparation",
+    commercialStatus: "production",
+  }),
+  profile("tanf-denial", "benefits-appeal", "ESSENTIAL", 1499, {
+    pricingRationale: "TANF denial — eligibility analysis and response preparation",
+    commercialStatus: "production",
+  }),
+  profile("va-disability-denial", "benefits-appeal", "ADVANCED", 5999, {
+    includedMail: "standard",
+    pricingRationale: "VA disability denial — service connection analysis and rating dispute",
+    commercialStatus: "production",
+  }),
+  profile("va-claim-reconsideration", "benefits-appeal", "STANDARD", 2999, {
+    pricingRationale: "VA claim reconsideration — updated evidence and argument",
+    commercialStatus: "production",
+  }),
+  profile("va-hearing", "benefits-appeal", "ADVANCED", 4999, {
+    pricingRationale: "VA hearing — evidence organization and testimony preparation",
+    commercialStatus: "production",
+  }),
+  profile("state-disability-denial", "benefits-appeal", "STANDARD", 2999, {
+    pricingRationale: "State disability denial — eligibility analysis and response",
+    commercialStatus: "production",
+  }),
+  profile("private-disability-denial", "benefits-appeal", "ADVANCED", 5999, {
+    includedMail: "standard",
+    pricingRationale: "Private disability denial — policy analysis and medical evidence argument",
+    commercialStatus: "production",
+  }),
+  profile("benefits-reconsideration", "benefits-appeal", "STANDARD", 2999, {
+    pricingRationale: "Generic benefits reconsideration — updated evidence and eligibility argument",
+    commercialStatus: "production",
+  }),
+  profile("benefits-hearing", "benefits-appeal", "ADVANCED", 4999, {
+    pricingRationale: "Benefits hearing — evidence organization and testimony preparation",
+    commercialStatus: "production",
+  }),
+];
+
+// ── Private Office ──────────────────────────────────────────────────────────
+
+const privateOfficeProfiles: WorkflowPricingProfile[] = [
+  profile("bank-wire-dispute", "mailmypdf-private-office", "ADVANCED", 4999, {
+    pricingRationale: "Bank wire dispute — transaction analysis and evidence-based dispute preparation",
+    commercialStatus: "production",
+  }),
+  profile("contractor-dispute", "mailmypdf-private-office", "ADVANCED", 4999, {
+    pricingRationale: "Contractor dispute — contract analysis and evidence organization",
+    commercialStatus: "production",
+  }),
+  profile("property-insurance-claim", "mailmypdf-private-office", "STANDARD", 2999, {
+    pricingRationale: "Property insurance claim — damage documentation and claim preparation",
+    commercialStatus: "production",
+  }),
+  profile("security-deposit-dispute", "mailmypdf-private-office", "STANDARD", 2999, {
+    pricingRationale: "Security deposit dispute — lease analysis and damage documentation",
+    commercialStatus: "production",
+  }),
+  profile("trust-beneficiary-notice", "mailmypdf-private-office", "STANDARD", 2999, {
+    pricingRationale: "Trust beneficiary notice — trust analysis and notification preparation",
+    commercialStatus: "production",
+  }),
+];
+
+// ── Records Requests (production) ────────────────────────────────────────────
+
+const recordsRequestsProfiles: WorkflowPricingProfile[] = [
+  profile("public-records-request", "records-requests", "ESSENTIAL", 1299, {
+    pricingRationale: "Public records request — structured request preparation with identifiers",
+    commercialStatus: "production",
+  }),
+  profile("police-records", "records-requests", "ESSENTIAL", 1299, {
+    pricingRationale: "Police records request — incident-specific request with law enforcement domain",
+    commercialStatus: "production",
+  }),
+  profile("police-report-request", "records-requests", "ESSENTIAL", 1299, {
+    pricingRationale: "Police report request — targeted report retrieval",
+    commercialStatus: "production",
+  }),
+  profile("court-records-request", "records-requests", "ESSENTIAL", 1299, {
+    pricingRationale: "Court records request — case-specific request with court domain",
+    commercialStatus: "production",
+  }),
+  profile("open-records-request", "records-requests", "ESSENTIAL", 1299, {
+    pricingRationale: "Open records request — state-specific open records law preparation",
+    commercialStatus: "production",
+  }),
+  profile("foia-request", "records-requests", "ESSENTIAL", 1299, {
+    pricingRationale: "FOIA request — federal records request with fee/category preparation",
+    commercialStatus: "production",
+  }),
+  profile("arrest-records-request", "records-requests", "ESSENTIAL", 1299, {
+    pricingRationale: "Arrest records request — targeted arrest/booking records retrieval",
+    commercialStatus: "production",
+  }),
+  profile("birth-records-request", "records-requests", "ESSENTIAL", 1299, {
+    pricingRationale: "Birth records request — vital records request preparation",
+    commercialStatus: "production",
+  }),
+  profile("marriage-records-request", "records-requests", "ESSENTIAL", 1299, {
+    pricingRationale: "Marriage records request — vital records request preparation",
+    commercialStatus: "production",
+  }),
+  profile("property-records-request", "records-requests", "ESSENTIAL", 1299, {
+    pricingRationale: "Property records request — parcel-specific request preparation",
+    commercialStatus: "production",
+  }),
+  profile("permit-records-request", "records-requests", "ESSENTIAL", 1299, {
+    pricingRationale: "Permit records request — permit-specific request preparation",
+    commercialStatus: "production",
+  }),
+  profile("code-enforcement-records", "records-requests", "ESSENTIAL", 1299, {
+    pricingRationale: "Code enforcement records — property-specific request with code domain",
+    commercialStatus: "production",
+  }),
+  profile("planning-records", "records-requests", "ESSENTIAL", 1299, {
+    pricingRationale: "Planning records — planning/zoning-specific request preparation",
+    commercialStatus: "production",
+  }),
+];
+
+// ── Code Enforcement (production) ────────────────────────────────────────────
+
+const codeEnforcementProfiles: WorkflowPricingProfile[] = [
+  profile("respond-to-property-inspection-request", "code-enforcement", "STANDARD", 2499, {
+    pricingRationale: "Property inspection response — compliance analysis and correction documentation",
+    commercialStatus: "production",
+  }),
+  profile("respond-to-code-violation-notice", "code-enforcement", "STANDARD", 2499, {
+    pricingRationale: "Code violation response — compliance analysis and correction strategy",
+    commercialStatus: "production",
+  }),
+  profile("respond-to-notice-of-violation", "code-enforcement", "STANDARD", 2499, {
+    pricingRationale: "Notice of violation response — compliance analysis and remediation plan",
+    commercialStatus: "production",
+  }),
+  profile("respond-to-property-maintenance-violation", "code-enforcement", "STANDARD", 2499, {
+    pricingRationale: "Property maintenance violation — compliance analysis and correction plan",
+    commercialStatus: "production",
+  }),
+  profile("respond-to-building-code-violation", "code-enforcement", "ADVANCED", 4999, {
+    pricingRationale: "Building code violation — complex code analysis with structural compliance",
+    commercialStatus: "production",
+  }),
+  profile("respond-to-zoning-violation", "code-enforcement", "ADVANCED", 4999, {
+    pricingRationale: "Zoning violation — complex zoning analysis and use compliance",
+    commercialStatus: "production",
+  }),
+  profile("respond-to-unpermitted-construction-notice", "code-enforcement", "ADVANCED", 4999, {
+    pricingRationale: "Unpermitted construction — permit analysis and compliance strategy",
+    commercialStatus: "production",
+  }),
+  profile("request-code-enforcement-extension", "code-enforcement", "ESSENTIAL", 1299, {
+    pricingRationale: "Extension request — simple deadline extension preparation",
+    commercialStatus: "production",
+  }),
+  profile("submit-proof-of-correction", "code-enforcement", "ESSENTIAL", 1299, {
+    pricingRationale: "Proof of correction — compliance documentation submission",
+    commercialStatus: "production",
+  }),
+  profile("dispute-code-enforcement-citation", "code-enforcement", "STANDARD", 2999, {
+    pricingRationale: "Citation dispute — evidence-based dispute with legal analysis",
+    commercialStatus: "production",
+  }),
+  profile("appeal-code-enforcement-decision", "code-enforcement", "ADVANCED", 4999, {
+    pricingRationale: "Code enforcement appeal — full appeal with grounds and evidence",
+    commercialStatus: "production",
+  }),
+  profile("request-administrative-hearing", "code-enforcement", "STANDARD", 2999, {
+    pricingRationale: "Administrative hearing request — procedural preparation",
+    commercialStatus: "production",
+  }),
+  profile("respond-to-abatement-notice", "code-enforcement", "STANDARD", 2499, {
+    pricingRationale: "Abatement notice response — cost analysis and compliance strategy",
+    commercialStatus: "production",
+  }),
+  profile("dispute-code-enforcement-fine", "code-enforcement", "STANDARD", 2999, {
+    pricingRationale: "Fine/penalty dispute — evidence-based fine reduction argument",
+    commercialStatus: "production",
+  }),
+];
+
+
 export const WORKFLOW_PRICING_CATALOG: WorkflowPricingProfile[] = [
   ...mailmypdfProfiles,
   ...noticeRespondProfiles,
   ...disputeMailProfiles,
   ...appealMailProfiles,
   ...immigrationProfiles,
+  ...immigrationExtendedProfiles,
+  ...insuranceClaimsProfiles,
+  ...benefitsAppealProfiles,
+  ...privateOfficeProfiles,
+  ...recordsRequestsProfiles,
+  ...codeEnforcementProfiles,
   ...smallBusinessProfiles,
   ...proposedProfiles,
 ];
