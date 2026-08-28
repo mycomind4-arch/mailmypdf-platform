@@ -562,6 +562,8 @@ const appealMailProfiles: WorkflowPricingProfile[] = [
   profile("license-revocation-appeal", "appeal-mail", "STANDARD", 3999, { pricingRationale: "License revocation with DMV domain logic", commercialStatus: "production" }),
   profile("dmv-suspension-appeal", "appeal-mail", "STANDARD", 3999, { pricingRationale: "DMV suspension with DMV domain logic", commercialStatus: "production" }),
   profile("registration-suspension-appeal", "appeal-mail", "STANDARD", 3999, { pricingRationale: "Registration suspension with DMV domain logic", commercialStatus: "production" }),
+  profile("administrative-decision-appeal", "appeal-mail", "ADVANCED", 5999, { includedMail: "standard", pricingRationale: "Administrative decision appeal — formal appeal of government agency action with procedural requirements", commercialStatus: "production" }),
+  profile("ssdi-appeal", "appeal-mail", "ADVANCED", 6999, { includedMail: "standard", pricingRationale: "SSDI formal appeal — multi-stage disability appeal with hearing preparation", commercialStatus: "production" }),
 ];
 
 // ── Immigration Mail ─────────────────────────────────────────────────────────
