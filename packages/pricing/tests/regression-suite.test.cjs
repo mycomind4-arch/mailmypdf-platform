@@ -173,3 +173,204 @@ describe('Universal Pricing Regression Suite', () => {
     });
   });
 });
+
+/* ─────────────────────────────────────────────
+   Ecosystem Integration Tests
+   These tests scan the actual repo source files
+   across the ecosystem to verify no local pricing
+   engines remain in checkout code.
+   ───────────────────────────────────────────── */
+
+const fs = require('fs');
+const path = require('path');
+
+const ECOSYSTEM_ROOT = path.resolve(__dirname, '../../../../..');
+const REPOS = [
+  'ecosystem/notice-respond',
+  'ecosystem/immigration-mail',
+  'ecosystem/dispute-mail',
+  'ecosystem/appeal-mail',
+  'ecosystem/benefits-appeal',
+  'ecosystem/insurance-claims',
+  'ecosystem/records-requests',
+  'ecosystem/code-enforcement',
+  'ecosystem/mailmypdf-private-office',
+  'ecosystem/mailmypdf-smallbusiness',
+];
+
+function scanRepoDir(repoRel, subdir, extensions = ['.ts', '.tsx']) {
+  const dirPath = path.join(ECOSYSTEM_ROOT, repoRel, subdir);
+  if (!fs.existsSync(dirPath)) return [];
+  const results = [];
+  function walk(dir) {
+    for (const entry of fs.readdirSync(dir, { withFileTypes: true })) {
+      if (entry.name === 'node_modules' || entry.name === 'dist' || entry.name === '.next') continue;
+      const full = path.join(dir, entry.name);
+      if (entry.isDirectory()) walk(full);
+      else if (extensions.some(ext => entry.name.endsWith(ext)) && !entry.name.endsWith('.test.ts') && !entry.name.endsWith('.test.tsx')) {
+        results.push(full);
+      }
+    }
+  }
+  walk(dirPath);
+  return results;
+}
+
+function scanRepoFiles(repoRel, extensions = ['.ts', '.tsx']) {
+  const repoPath = path.join(ECOSYSTEM_ROOT, repoRel, 'src');
+  if (!fs.existsSync(repoPath)) return [];
+  const results = [];
+  function walk(dir) {
+    for (const entry of fs.readdirSync(dir, { withFileTypes: true })) {
+      if (entry.name === 'node_modules' || entry.name === 'dist' || entry.name === '.next') continue;
+      const full = path.join(dir, entry.name);
+      if (entry.isDirectory()) walk(full);
+      else if (extensions.some(ext => entry.name.endsWith(ext)) && !entry.name.endsWith('.test.ts') && !entry.name.endsWith('.test.tsx')) {
+        results.push(full);
+      }
+    }
+  }
+  walk(repoPath);
+  return results;
+}
+
+function fileContains(filePath, pattern) {
+  try {
+    const content = fs.readFileSync(filePath, 'utf8');
+    return content.includes(pattern);
+  } catch { return false; }
+}
+
+describe('Ecosystem Checkout Migration', () => {
+
+  describe('No local PRICES constants in checkout code', () => {
+    it('no repo has a local PRICES constant used for checkout', () => {
+      const violations = [];
+      for (const repo of REPOS) {
+        const files = scanRepoFiles(repo);
+        for (const file of files) {
+          // Look for local PRICES constants that are not imported from @mailmypdf/pricing
+          if (fileContains(file, 'PRICES') && !fileContains(file, '@mailmypdf/pricing') && fileContains(file, 'stripe')) {
+            violations.push(`${repo}/${path.relative(path.join(ECOSYSTEM_ROOT, repo), file)}`);
+          }
+        }
+      }
+      assert.deepStrictEqual(violations, [], `Local PRICES constants in checkout code: ${violations.join(', ')}`);
+    });
+  });
+
+  describe('No local MAILING_PRICES constants', () => {
+    it('no repo defines a local MAILING_PRICES constant', () => {
+      const violations = [];
+      for (const repo of REPOS) {
+        const files = scanRepoFiles(repo);
+        for (const file of files) {
+          if (fileContains(file, 'MAILING_PRICES') && !fileContains(file, '@mailmypdf/pricing')) {
+            violations.push(`${repo}/${path.relative(path.join(ECOSYSTEM_ROOT, repo), file)}`);
+          }
+        }
+      }
+      assert.deepStrictEqual(violations, [], `Local MAILING_PRICES constants found: ${violations.join(', ')}`);
+    });
+  });
+
+  describe('Canonical import presence', () => {
+    it('repos with checkout routes import @mailmypdf/pricing', () => {
+      const reposWithCheckout = [];
+      for (const repo of REPOS) {
+        // Scan src/, server/, and functions/ directories
+        const srcFiles = scanRepoFiles(repo);
+        const allFiles = [...srcFiles, ...scanRepoDir(repo, 'server'), ...scanRepoDir(repo, 'functions')];
+        const hasCheckoutRoute = allFiles.some(f => 
+          (f.includes('checkout') || f.includes('approve')) && 
+          fileContains(f, 'stripe')
+        );
+        if (!hasCheckoutRoute) continue;
+        const hasCanonicalImport = allFiles.some(f => fileContains(f, '@mailmypdf/pricing'));
+        if (!hasCanonicalImport) {
+          reposWithCheckout.push(repo);
+        }
+      }
+      assert.deepStrictEqual(reposWithCheckout, [], `Repos with checkout but no @mailmypdf/pricing import: ${reposWithCheckout.join(', ')}`);
+    });
+  });
+
+  describe('Checkout endpoint exists where UI calls it', () => {
+    it('repos with /api/checkout UI calls have server handlers', () => {
+      const missing = [];
+      for (const repo of REPOS) {
+        const files = scanRepoFiles(repo);
+        const hasUICall = files.some(f => 
+          fileContains(f, '/api/checkout') && 
+          (f.endsWith('.tsx') || f.endsWith('.ts')) &&
+          !f.includes('/api/checkout')
+        );
+        if (!hasUICall) continue;
+        // Check multiple possible locations for checkout handler
+        const possiblePaths = [
+          path.join(ECOSYSTEM_ROOT, repo, 'src/routes/api/checkout.ts'),
+          path.join(ECOSYSTEM_ROOT, repo, 'server/api/checkout.ts'),
+          path.join(ECOSYSTEM_ROOT, repo, 'functions/api/checkout.ts'),
+        ];
+        const hasServerHandler = possiblePaths.some(p => fs.existsSync(p));
+        if (!hasServerHandler) {
+          missing.push(repo);
+        }
+      }
+      assert.deepStrictEqual(missing, [], `Repos with UI checkout calls but no checkout handler: ${missing.join(', ')}`);
+    });
+  });
+
+  describe('Profile coverage by vertical', () => {
+    const VERTICALS = {
+      'notice-respond': 10,
+      'dispute-mail': 10,
+      'appeal-mail': 25,
+      'immigration-mail': 10,
+      'insurance-claims': 15,
+      'benefits-appeal': 15,
+      'records-requests': 10,
+      'code-enforcement': 10,
+      'mailmypdf-private-office': 3,
+      'mailmypdf-smallbusiness': 5,
+    };
+
+    for (const [vertical, minCount] of Object.entries(VERTICALS)) {
+      it(`${vertical} has at least ${minCount} production profiles`, () => {
+        const profiles = getPricingProfilesByVertical(vertical).filter(p => p.commercialStatus === 'production');
+        assert.ok(profiles.length >= minCount, `${vertical}: expected >= ${minCount}, got ${profiles.length}`);
+      });
+    }
+  });
+
+  describe('Quote correctness for every production profile', () => {
+    it('calculateQuote returns positive total for every production profile with certified mail', () => {
+      for (const profile of WORKFLOW_PROFILES) {
+        const q = calculateQuote({
+          workflowId: profile.workflowId,
+          verticalId: profile.verticalId,
+          actualPages: Math.max(profile.includedPages, 3),
+          mailClass: 'certified',
+        });
+        assert.ok(q.totalCents > 0, `${profile.workflowId}: total should be positive, got ${q.totalCents}`);
+        assert.ok(q.totalCents >= profile.basePriceCents, `${profile.workflowId}: total (${q.totalCents}) should be >= base (${profile.basePriceCents})`);
+      }
+    });
+
+    it('quote with extra pages costs more than included', () => {
+      for (const profile of WORKFLOW_PROFILES.slice(0, 30)) {
+        const base = calculateQuote({
+          workflowId: profile.workflowId, verticalId: profile.verticalId,
+          actualPages: profile.includedPages, mailClass: 'standard',
+        });
+        const extra = calculateQuote({
+          workflowId: profile.workflowId, verticalId: profile.verticalId,
+          actualPages: profile.includedPages + 5, mailClass: 'standard',
+        });
+        if (profile.band !== 'FREE') {
+          assert.ok(extra.totalCents > base.totalCents, `${profile.workflowId}: extra pages should cost more`);
+        }
+      }
+    });
+  });
+});
