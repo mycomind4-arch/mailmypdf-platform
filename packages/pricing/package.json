@@ -5,13 +5,19 @@
   "type": "module",
   "main": "./dist/index.js",
   "types": "./dist/index.d.ts",
-  "files": ["dist"],
-  "publishConfig": { "access": "public" },
+  "files": [
+    "dist"
+  ],
+  "publishConfig": {
+    "access": "public"
+  },
   "scripts": {
     "build": "tsc",
     "typecheck": "tsc --noEmit",
     "test": "node --test",
     "lint": "tsc --noEmit"
   },
-  "dependencies": {}
+  "dependencies": {
+    "typescript": "^7.0.2"
+  }
 }
