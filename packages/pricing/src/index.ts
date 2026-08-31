@@ -564,6 +564,11 @@ const appealMailProfiles: WorkflowPricingProfile[] = [
   profile("registration-suspension-appeal", "appeal-mail", "STANDARD", 3999, { pricingRationale: "Registration suspension with DMV domain logic", commercialStatus: "production" }),
   profile("administrative-decision-appeal", "appeal-mail", "ADVANCED", 5999, { includedMail: "standard", pricingRationale: "Administrative decision appeal — formal appeal of government agency action with procedural requirements", commercialStatus: "production" }),
   profile("ssdi-appeal", "appeal-mail", "ADVANCED", 6999, { includedMail: "standard", pricingRationale: "SSDI formal appeal — multi-stage disability appeal with hearing preparation", commercialStatus: "production" }),
+  // ── IRS Notice Workflows (Wave 2 — Document Intelligence Anchor) ──
+  profile("irs-cp2000-response", "appeal-mail", "ADVANCED", 5999, { includedMail: "standard", pricingRationale: "CP2000 underreporter response with income discrepancy analysis — 30-day deadline", commercialStatus: "production" }),
+  profile("irs-cp14-response", "appeal-mail", "STANDARD", 3999, { includedMail: "standard", pricingRationale: "CP14 balance due response with payment plan assessment", commercialStatus: "production" }),
+  profile("irs-cp504-response", "appeal-mail", "HIGH_STAKES", 9999, { includedMail: "standard", pricingRationale: "CP504 levy notice — CRITICAL 30-day CDP hearing deadline, high stakes with levy risk — registered mail recommended as upgrade", commercialStatus: "production" }),
+  profile("irs-cp523-response", "appeal-mail", "ADVANCED", 4999, { includedMail: "standard", pricingRationale: "CP523 installment agreement default — reinstatement or renegotiation within 30 days", commercialStatus: "production" }),
 ];
 
 // ── Immigration Mail ─────────────────────────────────────────────────────────
