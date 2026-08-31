@@ -9,6 +9,13 @@ import {
 
 const passed = (stage: any, data?: unknown) => ({ stage, status: "passed" as const, data, messages: [] });
 
+/** Stage name → DomainPack method name (some stages differ from their method names). */
+const stageToMethod: Record<string, string> = {
+  deadline: "deadlines",
+  contradiction: "contradictions",
+  discrepancy: "discrepancies",
+};
+
 function makePack(): DomainPack {
   const pack: Record<string, any> = {
     id: "fixture",
@@ -16,8 +23,11 @@ function makePack(): DomainPack {
     classify: async () => passed("classification"),
     extract: async () => passed("extraction"),
   };
-  for (const stage of GOLD_STANDARD_PIPELINE_STAGES.filter((stage) => !["security", "classification", "extraction", "blockingGate"].includes(stage))) {
-    pack[stage] = async () => passed(stage);
+  for (const stage of GOLD_STANDARD_PIPELINE_STAGES.filter(
+    (stage) => !["security", "classification", "extraction", "blockingGate"].includes(stage),
+  )) {
+    const method = stageToMethod[stage] ?? stage;
+    pack[method] = async () => passed(stage);
   }
   return pack as DomainPack;
 }

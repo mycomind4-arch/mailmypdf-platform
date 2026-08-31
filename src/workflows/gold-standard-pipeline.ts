@@ -122,14 +122,23 @@ export async function runGoldStandardPipeline(
   ];
 
   for (const [stage, fn] of ordered) {
-    if (!(await run(stage, fn))) return { workflowId, status: "blocked", stages };
+    if (!(await run(stage, fn))) break;
   }
 
+  // If not all intelligence stages ran, return early without the blocking gate.
+  if (stages.length < ordered.length) {
+    return { workflowId, status: "blocked", stages };
+  }
+
+  // All intelligence stages ran — evaluate the blocking gate.
   const validation = stages.find((s) => s.stage === "validation");
+  const allIntelligencePassed = intelligenceStages.every((stage) =>
+    stages.some((s) => s.stage === stage && s.status === "passed"),
+  );
   const blockingGate: StageResult = {
     stage: "blockingGate",
-    status: validation?.status === "passed" ? "passed" : "blocked",
-    messages: validation?.status === "passed"
+    status: allIntelligencePassed && validation?.status === "passed" ? "passed" : "blocked",
+    messages: allIntelligencePassed && validation?.status === "passed"
       ? ["All pre-review validation passed; consequential stages may proceed only through their explicit gates."]
       : ["Validation did not pass; review, approval, mailing, tracking, and proof certification are blocked."],
   };

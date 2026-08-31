@@ -81,6 +81,25 @@ importers:
         specifier: workspace:*
         version: link:../core
 
+  packages/runtime:
+    dependencies:
+      '@mailmypdf/core':
+        specifier: workspace:*
+        version: link:../core
+      '@mailmypdf/fulfillment':
+        specifier: workspace:*
+        version: link:../fulfillment
+      '@mailmypdf/proof':
+        specifier: workspace:*
+        version: link:../proof
+    devDependencies:
+      '@types/node':
+        specifier: ^26.2.0
+        version: 26.2.0
+      typescript:
+        specifier: ^5.8.3
+        version: 5.9.3
+
   packages/vertical-foundry:
     dependencies:
       '@mailmypdf/agent-runtime':
