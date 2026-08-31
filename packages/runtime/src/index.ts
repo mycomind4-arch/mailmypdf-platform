@@ -101,3 +101,18 @@ export {
   type WorkflowRegistry,
   type CertificationStatus,
 } from "./workflow-registry.js";
+
+// Supabase adapter
+export {
+  createSupabaseRepository,
+  type SupabaseLike,
+} from "./supabase-repository.js";
+
+// Runtime certification
+export {
+  certifyWorkflow,
+  certifyWorkflows,
+  type CertificationInput,
+  type CertificationResult,
+  type CertificationSummary,
+} from "./runtime-certification.js";

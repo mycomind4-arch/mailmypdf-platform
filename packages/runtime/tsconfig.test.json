@@ -8,7 +8,13 @@
     "exactOptionalPropertyTypes": true,
     "skipLibCheck": true,
     "outDir": "./dist-test",
-    "rootDir": "."
+    "rootDir": ".",
+    "paths": {
+      "@mailmypdf/core": ["../core/src/index.ts"],
+      "@mailmypdf/workflows": ["../workflows/src/index.ts"],
+      "@mailmypdf/proof": ["../proof/src/index.ts"],
+      "@mailmypdf/fulfillment": ["../fulfillment/src/index.ts"]
+    }
   },
   "include": ["src", "tests"]
 }
