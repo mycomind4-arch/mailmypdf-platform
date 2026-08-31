@@ -14,7 +14,7 @@
  * will refuse to proceed.
  */
 
-import type { PlatformId } from "@mailmypdf/core";
+import type { PlatformId } from "./types.js";
 import type { CaseRepository, CaseRecord, ApprovedPacket } from "./repository.js";
 
 export interface ReadinessReview {

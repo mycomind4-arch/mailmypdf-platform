@@ -10,7 +10,7 @@
  * The idempotency key is scoped to the operation type + case ID.
  */
 
-import type { PlatformId } from "@mailmypdf/core";
+import type { PlatformId } from "./types.js";
 
 export interface IdempotencyStore {
   /** Reserve a key. Returns true if the key was newly claimed, false if already taken. */

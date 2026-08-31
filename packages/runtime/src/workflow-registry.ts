@@ -14,7 +14,7 @@
  * context, not a separate workflow.
  */
 
-import type { PlatformId } from "@mailmypdf/core";
+import type { PlatformId } from "./types.js";
 
 export type CertificationStatus =
   | "planned"       // documented but not implemented

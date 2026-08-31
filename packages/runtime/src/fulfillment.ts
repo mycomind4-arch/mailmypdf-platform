@@ -10,7 +10,7 @@
  * entry point from "approved" to "submitted".
  */
 
-import type { PlatformId } from "@mailmypdf/core";
+import type { PlatformId } from "./types.js";
 import type { CaseRepository, ApprovedPacket } from "./repository.js";
 
 export interface FulfillmentRequest {

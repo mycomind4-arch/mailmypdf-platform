@@ -9,7 +9,7 @@
  * The audit chain is append-only. No event is ever deleted.
  */
 
-import type { PlatformId } from "@mailmypdf/core";
+import type { PlatformId } from "./types.js";
 
 export interface AuditChainEntry {
   id: PlatformId;

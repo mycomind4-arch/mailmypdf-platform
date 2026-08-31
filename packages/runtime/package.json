@@ -11,18 +11,16 @@
       "import": "./dist/index.js"
     }
   },
-  "files": ["dist"],
+  "files": [
+    "dist"
+  ],
   "scripts": {
     "build": "tsc",
     "typecheck": "tsc --noEmit",
     "test": "tsc -p tsconfig.test.json && node --test dist-test/tests/*.test.js",
     "lint": "tsc --noEmit"
   },
-  "dependencies": {
-    "@mailmypdf/core": "workspace:*",
-    "@mailmypdf/proof": "workspace:*",
-    "@mailmypdf/fulfillment": "workspace:*"
-  },
+  "dependencies": {},
   "devDependencies": {
     "@types/node": "^26.2.0",
     "typescript": "^5.8.3"

@@ -9,7 +9,7 @@
  *   - Fulfillment event deduplication
  */
 
-import type { PlatformId } from "@mailmypdf/core";
+import type { PlatformId } from "./types.js";
 import type { CaseState } from "./case-lifecycle.js";
 
 export interface CaseRecord {

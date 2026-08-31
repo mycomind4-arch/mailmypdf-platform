@@ -31,7 +31,7 @@
  *     occurred_at timestamptz default now()
  */
 
-import type { PlatformId } from "@mailmypdf/core";
+import type { PlatformId } from "./types.js";
 import type { CaseState } from "./case-lifecycle.js";
 import type { CaseRecord, CaseRepository, AuditEvent, EvidenceItem, ApprovedPacket, CreateCaseInput } from "./repository.js";
 
