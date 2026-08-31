@@ -991,6 +991,10 @@ const recordsRequestsProfiles: WorkflowPricingProfile[] = [
     pricingRationale: "Code enforcement records — property-specific request with code domain",
     commercialStatus: "production",
   }),
+  profile("property-permit-records", "records-requests", "ESSENTIAL", 1299, {
+    pricingRationale: "Property & permit records — combined property/permit request with inspection and plan-review domain",
+    commercialStatus: "production",
+  }),
   profile("planning-records", "records-requests", "ESSENTIAL", 1299, {
     pricingRationale: "Planning records — planning/zoning-specific request preparation",
     commercialStatus: "production",
