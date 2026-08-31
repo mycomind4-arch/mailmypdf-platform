@@ -1,20 +1,13 @@
 /**
- * @mailmypdf/runtime — Shared production runtime substrate.
+ * @mailmypdf/runtime — shared production substrate for the MailMyPDF ecosystem.
  *
- * The one package every vertical imports for:
- *   - Case lifecycle state machine
- *   - Repository contract (owner-scoped, optimistic concurrency)
- *   - Server-side, hash-bound approval gate
- *   - MailMyPDF fulfillment adapter with idempotency
- *   - HMAC webhook verification with deduplication
- *   - SHA-256 document integrity attestation
- *   - Tamper-evident audit chain
- *   - Canonical workflow registry
- *
- * Import order: core → runtime → vertical-specific code.
+ * Extracted from records-requests and appeal-mail. Contains the canonical
+ * contracts that every vertical must implement for: case lifecycle,
+ * persistence, approval, fulfillment, webhook verification, document
+ * integrity, idempotency, and audit chain.
  */
 
-// Case lifecycle
+// Case lifecycle state machine
 export {
   CASE_TRANSITIONS,
   canTransition,
@@ -25,28 +18,28 @@ export {
   type CaseState,
 } from "./case-lifecycle.js";
 
-// Repository contract
+// Repository contract (storage-agnostic)
 export {
   type CaseRecord,
+  type CaseRepository,
   type EvidenceItem,
   type ApprovedPacket,
   type AuditEvent,
-  type CaseRepository,
   type CreateCaseInput,
 } from "./repository.js";
 
-// Approval gate
+// Approval gate — server-side, hash-bound
 export {
+  DEFAULT_APPROVAL_CONFIG,
   approveCase,
   sha256Hex,
-  DEFAULT_APPROVAL_CONFIG,
+  type ReadinessReview,
   type ApprovalInput,
   type ApprovalResult,
-  type ReadinessReview,
   type ApprovalConfig,
 } from "./approval-gate.js";
 
-// Fulfillment
+// Fulfillment adapter — MailMyPDF API
 export {
   createMailMyPDFFulfillment,
   type FulfillmentRequest,
@@ -55,22 +48,22 @@ export {
   type MailMyPDFConfig,
 } from "./fulfillment.js";
 
-// Webhook verification
+// Webhook verification — HMAC-SHA256
 export {
   signWebhook,
   verifyWebhook,
   processFulfillmentWebhook,
   type FulfillmentWebhookPayload,
-  type WebhookVerificationResult,
   type VerifiedWebhook,
   type RejectedWebhook,
+  type WebhookVerificationResult,
 } from "./webhook-verification.js";
 
-// Document integrity
+// Document integrity — SHA-256 attestation
 export {
   attestDocument,
-  buildFulfillmentMetadata,
   verifyDocumentIntegrity,
+  buildFulfillmentMetadata,
   type ApprovedDocument,
   type DocumentIntegrity,
 } from "./document-integrity.js";
@@ -78,28 +71,28 @@ export {
 // Idempotency
 export {
   createMemoryIdempotencyStore,
-  withIdempotency,
   fulfillmentKey,
   webhookKey,
   paymentKey,
+  withIdempotency,
   type IdempotencyStore,
 } from "./idempotency.js";
 
-// Audit chain
+// Audit chain — tamper-evident
 export {
-  createAuditEntry,
   computeEventHash,
+  createAuditEntry,
   verifyAuditChain,
   GENESIS_HASH,
   type AuditChainEntry,
 } from "./audit-chain.js";
 
-// Workflow registry
+// Workflow registry — canonical certification lifecycle
 export {
   createWorkflowRegistry,
+  type CertificationStatus,
   type WorkflowManifest,
   type WorkflowRegistry,
-  type CertificationStatus,
 } from "./workflow-registry.js";
 
 // Supabase adapter
@@ -107,12 +100,3 @@ export {
   createSupabaseRepository,
   type SupabaseLike,
 } from "./supabase-repository.js";
-
-// Runtime certification
-export {
-  certifyWorkflow,
-  certifyWorkflows,
-  type CertificationInput,
-  type CertificationResult,
-  type CertificationSummary,
-} from "./runtime-certification.js";
