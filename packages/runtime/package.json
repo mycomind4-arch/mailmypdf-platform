@@ -20,7 +20,11 @@
     "test": "tsc -p tsconfig.test.json && node --test dist-test/tests/*.test.js",
     "lint": "tsc --noEmit"
   },
-  "dependencies": {},
+  "dependencies": {
+    "@mailmypdf/core": "workspace:*",
+    "@mailmypdf/fulfillment": "workspace:*",
+    "@mailmypdf/proof": "workspace:*"
+  },
   "devDependencies": {
     "@types/node": "^26.2.0",
     "typescript": "^5.8.3"
