@@ -14,7 +14,12 @@ export function httpHealthProbe(options: HttpProbeOptions): HealthProbe {
       const controller = new AbortController();
       const timer = setTimeout(() => controller.abort(), options.timeoutMs ?? 5000);
       try {
-        const response = await fetch(options.url, { method: 'GET', headers: options.headers, signal: controller.signal });
+        const init: RequestInit = {
+          method: 'GET',
+          signal: controller.signal,
+          ...(options.headers ? { headers: options.headers } : {}),
+        };
+        const response = await fetch(options.url, init);
         return { ok: response.ok, message: `${response.status} ${response.statusText}`.trim() };
       } finally {
         clearTimeout(timer);

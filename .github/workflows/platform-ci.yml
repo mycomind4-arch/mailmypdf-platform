@@ -5,6 +5,13 @@ on:
     branches: [main]
   pull_request:
 
+permissions:
+  contents: read
+
+concurrency:
+  group: platform-ci-${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
 jobs:
   verify:
     runs-on: ubuntu-latest
@@ -15,7 +22,6 @@ jobs:
       - name: Install pnpm
         uses: pnpm/action-setup@v6
         with:
-          version: 10
           run_install: false
 
       - name: Install Node.js
@@ -24,17 +30,37 @@ jobs:
           node-version: 20
           cache: pnpm
 
-      - name: Install dependencies and reconcile lockfile
-        run: pnpm install --no-frozen-lockfile
-
-      - name: Fail on lockfile drift
-        run: git diff --exit-code -- pnpm-lock.yaml
+      - name: Install dependencies
+        run: pnpm install --frozen-lockfile
 
       - name: Typecheck
-        run: pnpm typecheck
+        id: typecheck
+        continue-on-error: true
+        shell: bash
+        run: |
+          set -o pipefail
+          pnpm typecheck 2>&1 | tee typecheck.log
+
+      - name: Upload typecheck log
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: typecheck-log
+          path: typecheck.log
+          retention-days: 1
+
+      - name: Enforce typecheck
+        if: steps.typecheck.outcome == 'failure'
+        run: exit 1
+
+      - name: Lint
+        run: pnpm lint
 
       - name: Test
         run: pnpm test
 
       - name: Build
         run: pnpm build
+
+      - name: Verify publishable packages
+        run: pnpm pack:verify

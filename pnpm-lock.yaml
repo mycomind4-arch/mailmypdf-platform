@@ -59,6 +59,9 @@ importers:
       '@mailmypdf/core':
         specifier: workspace:*
         version: link:../core
+      '@mailmypdf/workflows':
+        specifier: workspace:*
+        version: link:../workflows
 
   packages/fulfillment:
     dependencies:
@@ -75,6 +78,19 @@ importers:
         specifier: workspace:*
         version: link:../documents
 
+  packages/mailing-client: {}
+
+  packages/payment-fulfillment:
+    dependencies:
+      '@mailmypdf/core':
+        specifier: workspace:*
+        version: link:../core
+      '@mailmypdf/mailing-client':
+        specifier: workspace:*
+        version: link:../mailing-client
+
+  packages/pricing: {}
+
   packages/proof:
     dependencies:
       '@mailmypdf/core':
@@ -82,16 +98,6 @@ importers:
         version: link:../core
 
   packages/runtime:
-    dependencies:
-      '@mailmypdf/core':
-        specifier: workspace:*
-        version: link:../core
-      '@mailmypdf/fulfillment':
-        specifier: workspace:*
-        version: link:../fulfillment
-      '@mailmypdf/proof':
-        specifier: workspace:*
-        version: link:../proof
     devDependencies:
       '@types/node':
         specifier: ^26.2.0

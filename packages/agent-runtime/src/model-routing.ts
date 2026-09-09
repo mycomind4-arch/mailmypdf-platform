@@ -6,5 +6,7 @@ export interface ModelRoutePolicy { allowedProviders?: string[]; requiredClass: 
 export function routeModel(providers: readonly ModelProvider[], policy: ModelRoutePolicy): ModelProvider {
   const candidates = providers.filter(p => p.classes.includes(policy.requiredClass) && (!policy.requireHealthy || p.healthy) && (!policy.allowedProviders || policy.allowedProviders.includes(p.id)))
   if (!candidates.length) throw new Error(`No model provider satisfies ${policy.requiredClass}`)
-  return [...candidates].sort((a,b) => (a.priority ?? 0) - (b.priority ?? 0))[0]
+  const selected = [...candidates].sort((a,b) => (a.priority ?? 0) - (b.priority ?? 0))[0]
+  if (!selected) throw new Error(`No model provider satisfies ${policy.requiredClass}`)
+  return selected
 }

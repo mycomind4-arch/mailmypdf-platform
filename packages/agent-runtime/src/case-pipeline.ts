@@ -8,7 +8,13 @@ export async function executeCasePipeline(input: CasePipelineInput, agent: Agent
   const results: AgentResult[] = [];
   for (const task of input.tasks) results.push(await agent.execute(task));
   const failed = results.some((r) => r.status === 'failed' || r.status === 'blocked');
-  if (failed || !input.action || !fulfillment) return { caseId: input.caseId, agentResults: results, actionStatus: input.action?.status };
+  if (failed || !input.action || !fulfillment) {
+    return {
+      caseId: input.caseId,
+      agentResults: results,
+      ...(input.action ? { actionStatus: input.action.status } : {}),
+    };
+  }
   const completed = await fulfillment.execute(input.action);
   return { caseId: input.caseId, agentResults: results, actionStatus: completed.status };
 }

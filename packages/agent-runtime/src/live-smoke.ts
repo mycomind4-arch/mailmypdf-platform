@@ -25,7 +25,12 @@ export async function runLiveSmoke(probes: readonly HealthProbe[], now = new Dat
     const started = Date.now();
     try {
       const result = await probe.probe();
-      checks.push({ service: probe.service, status: result.ok ? 'pass' : 'fail', latencyMs: Date.now() - started, message: result.message });
+      checks.push({
+        service: probe.service,
+        status: result.ok ? 'pass' : 'fail',
+        latencyMs: Date.now() - started,
+        ...(result.message !== undefined ? { message: result.message } : {}),
+      });
     } catch (error) {
       checks.push({ service: probe.service, status: 'fail', latencyMs: Date.now() - started, message: error instanceof Error ? error.message : String(error) });
     }

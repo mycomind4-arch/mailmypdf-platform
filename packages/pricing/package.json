@@ -14,10 +14,7 @@
   "scripts": {
     "build": "tsc",
     "typecheck": "tsc --noEmit",
-    "test": "node --test",
+    "test": "pnpm build && node --test",
     "lint": "tsc --noEmit"
-  },
-  "dependencies": {
-    "typescript": "^7.0.2"
   }
 }
