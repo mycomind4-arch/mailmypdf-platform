@@ -26,9 +26,12 @@ test("domain pack composition uses the first concrete implementation", async () 
 });
 
 test("composition fails closed when no pack implements a required stage", async () => {
-  const first = pack("first", { research: undefined });
+  const first = pack("first");
+  delete (first as Partial<DomainPack>).research;
   const composed = composeDomainPack([first]);
   const output = await composed.research({ documents: [] }, []);
   assert.equal(output.status, "failed");
-  assert.match(output.messages[0], /No registered domain pack implements required stage/);
+  const message = output.messages[0];
+  assert.ok(message);
+  assert.match(message, /No registered domain pack implements required stage/);
 });
