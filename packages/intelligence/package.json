@@ -16,7 +16,7 @@
   "publishConfig": { "access": "public" },
   "scripts": {
     "build": "tsc -p tsconfig.json",
-    "test": "tsc -p tsconfig.test.json && node --test dist-test/tests/*.test.js",
+    "test": "pnpm --filter @mailmypdf/core build && pnpm --filter @mailmypdf/documents build && tsc -p tsconfig.test.json && node --test dist-test/tests/*.test.js",
     "typecheck": "tsc --noEmit",
     "lint": "tsc --noEmit"
   },
