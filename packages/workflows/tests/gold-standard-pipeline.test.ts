@@ -16,8 +16,12 @@ const stageToMethod: Record<string, keyof DomainPack> = {
   security: "security",
   classification: "classify",
   extraction: "extract",
+  understand: "understand",
+  facts: "facts",
   provenance: "provenance",
+  timeline: "timeline",
   deadline: "deadlines",
+  requirements: "requirements",
   contradiction: "contradictions",
   findings: "findings",
   discrepancy: "discrepancies",
@@ -36,18 +40,12 @@ const stageToMethod: Record<string, keyof DomainPack> = {
 };
 
 function makePack(): DomainPack {
-  const pack: Record<string, any> = {
-    id: "fixture",
-    security: async () => passed("security"),
-    classify: async () => passed("classification"),
-    extract: async () => passed("extraction"),
-  };
+  const pack: Record<string, any> = { id: "fixture" };
   for (const stage of GOLD_STANDARD_PIPELINE_STAGES) {
     if (stage === "blockingGate") continue;
     const method = stageToMethod[stage];
-    if (method && !pack[method]) {
-      pack[method] = async () => passed(stage);
-    }
+    assert.ok(method, `fixture must map pipeline stage ${stage}`);
+    pack[method] = async () => passed(stage);
   }
   return pack as DomainPack;
 }
@@ -67,7 +65,7 @@ describe("gold-standard pipeline", () => {
     const result = await runGoldStandardPipeline("fixture", pack, { documents: [] });
     assert.equal(result.status, "blocked");
     assert.deepEqual(result.stages.map((stage) => stage.stage), [
-      ...GOLD_STANDARD_PIPELINE_STAGES.slice(0, 15),
+      ...GOLD_STANDARD_PIPELINE_STAGES.slice(0, 19),
       "blockingGate",
     ]);
   });
@@ -77,10 +75,8 @@ describe("gold-standard pipeline", () => {
     pack.extract = async () => passed("classification");
     const result = await runGoldStandardPipeline("fixture", pack, { documents: [] });
     assert.equal(result.status, "blocked");
-    // The extraction stage should be recorded as failed due to stage mismatch
     const extraction = result.stages.find((s) => s.stage === "extraction");
     assert.equal(extraction?.status, "failed");
-    // The blockingGate should be present and blocked (validation never ran)
     const gate = result.stages.find((s) => s.stage === "blockingGate");
     assert.equal(gate?.status, "blocked");
   });
