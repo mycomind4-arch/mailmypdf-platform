@@ -16,7 +16,9 @@ test("domain pack builder fails closed for omitted handlers", async () => {
   const pack = buildDomainPack("test", {});
   const result = await pack.research({ documents: [] }, []);
   assert.equal(result.status, "failed");
-  assert.match(result.messages[0], /does not implement required stage 'research'/);
+  const message = result.messages[0];
+  assert.ok(message);
+  assert.match(message, /does not implement required stage 'research'/);
 });
 
 test("initial handlers receive only the input", async () => {
