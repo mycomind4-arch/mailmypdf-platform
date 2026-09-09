@@ -8,11 +8,12 @@ import {
 } from "../src/index.js";
 
 describe("ecosystem certification ledger", () => {
-  test("finds the inspected credit-report workflow", () => {
+  test("does not overclaim the inspected credit-report workflow", () => {
     const entry = getEcosystemCertification("dispute-mail", "credit-report");
     assert.ok(entry);
-    assert.equal(entry.status, "executable");
-    assert.equal(isEcosystemExecutable(entry), true);
+    assert.equal(entry.status, "domain-ready");
+    assert.equal(isEcosystemExecutable(entry), false);
+    assert.ok(entry.blockedBy.length > 0);
   });
 
   test("does not call blocked executable work Gold", () => {
