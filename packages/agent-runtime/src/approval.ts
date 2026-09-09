@@ -39,7 +39,8 @@ export class MemoryApprovalStore implements ApprovalStore {
     request.status = decision
     request.decidedBy = actor
     request.decidedAt = now.toISOString()
-    request.decisionReason = reason
+    if (reason !== undefined) request.decisionReason = reason
+    else delete request.decisionReason
     this.requests.set(id, request)
     return structuredClone(request)
   }
@@ -49,7 +50,8 @@ export class MemoryApprovalStore implements ApprovalStore {
     request.status = 'CANCELLED'
     request.decidedBy = actor
     request.decidedAt = now.toISOString()
-    request.decisionReason = reason
+    if (reason !== undefined) request.decisionReason = reason
+    else delete request.decisionReason
     this.requests.set(id, request)
     return structuredClone(request)
   }
