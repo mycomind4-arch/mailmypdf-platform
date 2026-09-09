@@ -37,7 +37,12 @@ export class GovernedToolExecutor {
 
     const tool = this.registry.assertCanInvoke(invocation.tool, options.approved === true) as ToolDefinition<I, O>
     const startedAt = new Date().toISOString()
-    const context: ToolContext = { runId: invocation.runId, caseId: invocation.caseId, actorId: options.actorId, signal: options.signal }
+    const context: ToolContext = {
+      runId: invocation.runId,
+      ...(invocation.caseId !== undefined ? { caseId: invocation.caseId } : {}),
+      ...(options.actorId !== undefined ? { actorId: options.actorId } : {}),
+      ...(options.signal !== undefined ? { signal: options.signal } : {}),
+    }
 
     try {
       const output = await tool.execute(input, context)
