@@ -152,10 +152,9 @@ export function hashDraft(draftContent: string): string {
 
 // ── Integrity Verification ──────────────────────────────────────────────────
 
-export interface IntegrityCheckResult {
-  ok: boolean;
-  error?: string;
-}
+export type IntegrityCheckResult =
+  | { ok: true }
+  | { ok: false; error: string };
 
 export function verifyIntegrity(intent: MailingIntent): IntegrityCheckResult {
   // Verify draft hash
