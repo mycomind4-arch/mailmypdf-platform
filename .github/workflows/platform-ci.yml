@@ -6,7 +6,7 @@ on:
   pull_request:
 
 permissions:
-  contents: read
+  contents: write
 
 concurrency:
   group: platform-ci-${{ github.workflow }}-${{ github.ref }}
@@ -18,6 +18,8 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@v6
+        with:
+          ref: ${{ github.head_ref || github.ref_name }}
 
       - name: Install pnpm
         uses: pnpm/action-setup@v6
@@ -33,15 +35,39 @@ jobs:
       - name: Regenerate workspace lockfile
         run: pnpm install --no-frozen-lockfile
 
-      - name: Upload regenerated lockfile
-        uses: actions/upload-artifact@v4
-        with:
-          name: pnpm-lock-regenerated
-          path: pnpm-lock.yaml
-          retention-days: 1
+      - name: Commit regenerated lockfile
+        if: github.event_name == 'pull_request'
+        shell: bash
+        run: |
+          if git diff --quiet -- pnpm-lock.yaml; then
+            echo "Lockfile is already current."
+            exit 0
+          fi
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add pnpm-lock.yaml
+          git commit -m "chore: regenerate pnpm lockfile [skip ci]"
+          git push origin "HEAD:${{ github.head_ref }}"
 
       - name: Typecheck
-        run: pnpm typecheck
+        id: typecheck
+        continue-on-error: true
+        shell: bash
+        run: |
+          set -o pipefail
+          pnpm typecheck 2>&1 | tee typecheck.log
+
+      - name: Upload typecheck log
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: typecheck-log
+          path: typecheck.log
+          retention-days: 1
+
+      - name: Enforce typecheck
+        if: steps.typecheck.outcome == 'failure'
+        run: exit 1
 
       - name: Lint
         run: pnpm lint
