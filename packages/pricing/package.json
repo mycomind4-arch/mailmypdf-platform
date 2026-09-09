@@ -16,8 +16,5 @@
     "typecheck": "tsc --noEmit",
     "test": "node --test",
     "lint": "tsc --noEmit"
-  },
-  "dependencies": {
-    "typescript": "^7.0.2"
   }
 }
